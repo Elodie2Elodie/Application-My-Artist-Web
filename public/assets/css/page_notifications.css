@@ -1,0 +1,640 @@
+.ellipse-11 {
+  border-radius: 18px;
+  background: #FFFFFF;
+  position: absolute;
+  top: 50%;
+  right: 158px;
+  translate: 0 -50%;
+  width: 36px;
+  height: 36px;
+}
+.vector-1 {
+  margin: 20px 27.5px 36.4px 0;
+  width: 20.8px;
+  height: 16.6px;
+}
+.vector {
+  width: 20.3px;
+  height: 22.7px;
+}
+.carbonnotification {
+  margin: 17.8px 65.3px 32.6px 0;
+  display: flex;
+  width: 25px;
+  height: 25px;
+  box-sizing: border-box;
+}
+.nom {
+  margin: 0 1px 4px 1px;
+  display: inline-block;
+  align-self: flex-start;
+  overflow-wrap: break-word;
+  font-family: 'Noto Sans';
+  font-weight: 600;
+  font-size: 20px;
+  color: var(--blanc, #FFFFFF);
+}
+.administrateur {
+  overflow-wrap: break-word;
+  font-family: 'Noto Sans';
+  font-weight: 400;
+  font-size: 14px;
+  color: var(--blanc, #FFFFFF);
+}
+.container-13 {
+  margin: 8px 24.7px 15px 0;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+.group-1000004649 {
+  margin-right: 14px;
+  width: 70px;
+  height: 73px;
+}
+.polygon-1 {
+  border-radius: 2px;
+  margin: 35px 0 17px 0;
+  width: 23px;
+  height: 21px;
+}
+.container-7 {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  box-sizing: border-box;
+}
+.ellipse-1810 {
+  border-radius: 5px;
+  background: #BF1212;
+  position: absolute;
+  top: 50%;
+  right: 438px;
+  translate: 0 -50%;
+  width: 10px;
+  height: 10px;
+}
+.ellipse-1811 {
+  border-radius: 5px;
+  background: #BF1212;
+  position: absolute;
+  top: 50%;
+  right: 489px;
+  translate: 0 -50%;
+  width: 10px;
+  height: 10px;
+}
+.container-12 {
+  background: #408A7E;
+  position: relative;
+  display: flex;
+  padding: 44px 145px 11px 145px;
+  box-sizing: border-box;
+}
+.group-1000004754 {
+  position: relative;
+  margin-bottom: 50px;
+  box-sizing: border-box;
+}
+.vector-28 {
+  width: 13.3px;
+  height: 7.8px;
+}
+.group {
+  margin-bottom: 2px;
+  display: flex;
+  width: 13.3px;
+  height: 7.8px;
+  box-sizing: border-box;
+}
+.vector-29 {
+  width: 13.3px;
+  height: 13.7px;
+}
+.group-1 {
+  display: flex;
+  width: 13.3px;
+  height: 13.7px;
+  box-sizing: border-box;
+}
+.container-2 {
+  margin-right: 2.4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 13.3px;
+  box-sizing: border-box;
+}
+.vector-31 {
+  width: 13.3px;
+  height: 13.7px;
+}
+.group-3 {
+  margin-bottom: 2px;
+  display: flex;
+  width: 13.3px;
+  height: 13.7px;
+  box-sizing: border-box;
+}
+.vector-30 {
+  width: 13.3px;
+  height: 7.8px;
+}
+.group-2 {
+  display: flex;
+  width: 13.3px;
+  height: 7.8px;
+  box-sizing: border-box;
+}
+.container-11 {
+  margin-bottom: 0px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 13.3px;
+  box-sizing: border-box;
+}
+.menu-1 {
+  margin: 2.4px 26px 10px 0;
+  display: flex;
+  flex-direction: row;
+  width: 29px;
+  height: fit-content;
+  box-sizing: border-box;
+}
+.tableau-de-bord {
+  overflow-wrap: break-word;
+  font-family: 'Poppins';
+  font-weight: 500;
+  font-size: 24px;
+  color: var(--noir, #000000);
+}
+.group-12 {
+  margin: 0 0 44.3px 11px;
+  display: flex;
+  flex-direction: row;
+  width: fit-content;
+  box-sizing: border-box;
+}
+.group-4 {
+  width: 34px;
+  height: 34.7px;
+}
+.frame-5 {
+  margin: 0 20px 3.7px 0;
+  display: flex;
+  width: 34px;
+  height: 34.7px;
+  box-sizing: border-box;
+}
+.agents {
+  margin-top: 2.4px;
+  display: inline-block;
+  overflow-wrap: break-word;
+  font-family: 'Poppins';
+  font-weight: 400;
+  font-size: 24px;
+  color: var(--noir, #000000);
+}
+.container-10 {
+  margin: 0 105.8px 38.6px 0;
+  display: flex;
+  flex-direction: row;
+  width: fit-content;
+  box-sizing: border-box;
+}
+.claritycalendar-line {
+  margin: 5.1px 25px 3.4px 0;
+  width: 34px;
+  height: 27.6px;
+}
+.calendrier {
+  overflow-wrap: break-word;
+  font-family: 'Poppins';
+  font-weight: 400;
+  font-size: 24px;
+  color: var(--noir, #000000);
+}
+.container-3 {
+  margin: 0 80.9px 39.1px 0;
+  display: flex;
+  flex-direction: row;
+  width: fit-content;
+  box-sizing: border-box;
+}
+.product {
+  width: 31px;
+  height: 27.5px;
+}
+.frame-3 {
+  margin: 4.3px 25px 4.2px 0;
+  display: flex;
+  width: 31px;
+  height: 27.5px;
+  box-sizing: border-box;
+}
+.commandes {
+  overflow-wrap: break-word;
+  font-family: 'Poppins';
+  font-weight: 400;
+  font-size: 24px;
+  color: var(--noir, #000000);
+}
+.container {
+  margin: 0 45.2px 39.1px 0;
+  display: flex;
+  flex-direction: row;
+  width: fit-content;
+  box-sizing: border-box;
+}
+.guarantee-1 {
+  margin: 3.6px 24px 6.4px 0;
+  width: 32px;
+  height: 26px;
+}
+.notes-et-avis {
+  overflow-wrap: break-word;
+  font-family: 'Poppins';
+  font-weight: 400;
+  font-size: 24px;
+  color: var(--noir, #000000);
+}
+.group-9 {
+  margin: 0 50.8px 39.1px 0;
+  display: flex;
+  flex-direction: row;
+  width: fit-content;
+  box-sizing: border-box;
+}
+.bill-1 {
+  margin: 1.4px 24px 7px 0;
+  width: 34px;
+  height: 27.6px;
+}
+.recus {
+  overflow-wrap: break-word;
+  font-family: 'Poppins';
+  font-weight: 400;
+  font-size: 24px;
+  color: var(--noir, #000000);
+}
+.container-5 {
+  margin: 0 125.8px 39.1px 0;
+  display: flex;
+  flex-direction: row;
+  width: fit-content;
+  box-sizing: border-box;
+}
+.document-3 {
+  margin: 0.7px 24px 6.1px 0;
+  width: 36px;
+  height: 29.2px;
+}
+.rapports {
+  overflow-wrap: break-word;
+  font-family: 'Poppins';
+  font-weight: 400;
+  font-size: 24px;
+  color: var(--noir, #000000);
+}
+.group-21 {
+  margin: 0 90.9px 42px 0;
+  display: flex;
+  flex-direction: row;
+  width: fit-content;
+  box-sizing: border-box;
+}
+.vector-57 {
+  width: 34.9px;
+  height: 21.7px;
+}
+.mingcuteshop-line {
+  margin: 4.7px 22.6px 9.6px 0;
+  display: flex;
+  width: 40px;
+  height: 32.5px;
+  box-sizing: border-box;
+}
+.boutique {
+  overflow-wrap: break-word;
+  font-family: 'Poppins';
+  font-weight: 400;
+  font-size: 24px;
+  color: var(--noir, #000000);
+}
+.group-22 {
+  margin: 0 90.6px 135.8px 0;
+  display: flex;
+  flex-direction: row;
+  width: fit-content;
+  box-sizing: border-box;
+}
+.vector-27 {
+  width: 30px;
+  height: 24.3px;
+}
+.frame {
+  margin: 4.9px 26px 12.8px 0;
+  display: flex;
+  width: 36px;
+  height: 29.2px;
+  box-sizing: border-box;
+}
+.paramtre {
+  overflow-wrap: break-word;
+  font-family: 'Poppins';
+  font-weight: 500;
+  font-size: 28px;
+  color: var(--noir, #000000);
+}
+.container-6 {
+  margin-right: 31.5px;
+  display: flex;
+  flex-direction: row;
+  width: fit-content;
+  box-sizing: border-box;
+}
+.container-9 {
+  box-shadow: 0px 4px 38px 0px rgba(0, 0, 0, 0.11);
+  background: #FFFFFF;
+  position: relative;
+  margin: 2.1px 162px 0 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10.5px 0 83.8px 0;
+  width: 398px;
+  height: fit-content;
+  box-sizing: border-box;
+}
+.notifications-1 {
+  overflow-wrap: break-word;
+  font-family: 'Inria Sans';
+  font-weight: 400;
+  font-size: 32px;
+  color: #5F5F5F;
+}
+.group-note-globale {
+
+  display: flex;
+  align-self: flex-start;
+  box-sizing: border-box;
+}
+.notifications {
+  overflow-wrap: break-word;
+  font-family: var(--inria-font-family, 'Inria Sans');
+  font-weight: var(--inria-font-weight, 400);
+  font-size: var(--inria-font-size, 32px);
+  color: #000000;
+}
+.entete-tableau {
+  box-shadow: 0px 2px 50px 0px rgba(0, 0, 0, 0.08);
+  border-radius: 8px;
+  background: #FFFFFF;
+  position: relative;
+  margin: 0 54px 28px 0;
+  display: flex;
+  padding: 11px 0 11px 24.4px;
+  width: 1198px;
+  box-sizing: border-box;
+}
+.rectangle-34625209 {
+  background: var(--blanc, #FFFFFF);
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  width: 1229px;
+  height: 2245px;
+}
+.modification {
+  overflow-wrap: break-word;
+  font-family: var(--inria-font-family, 'Inria Sans');
+  font-weight: var(--inria-font-weight, 400);
+  font-size: var(--inria-font-size, 32px);
+  color: #000000;
+  margin-left: 15%;
+}
+.group-couleur-vert {
+  border-radius: 15px;
+  background: #408A7E;
+  position: relative;
+  margin-bottom: 20px;
+  display: flex;
+  align-self: flex-start;
+  padding: 6px 0 5px 4.7px;
+  width: 250px;
+  box-sizing: border-box;
+}
+.group-couleur-rouge {
+  border-radius: 15px;
+  background: #ec300f;
+  position: relative;
+  margin-bottom: 20px;
+  display: flex;
+  align-self: flex-start;
+  padding: 6px 0 5px 4.7px;
+  width: 250px;
+  box-sizing: border-box;
+}
+.group-couleur-jaune {
+  border-radius: 15px;
+  background: #ebee31;
+  position: relative;
+  margin-bottom: 20px;
+  display: flex;
+  align-self: flex-start;
+  padding: 6px 0 5px 4.7px;
+  width: 250px;
+  box-sizing: border-box;
+}
+.group-couleur-orange {
+  border-radius: 15px;
+  background: #df9322;
+  position: relative;
+  margin-bottom: 20px;
+  display: flex;
+  align-self: flex-start;
+  padding: 6px 0 5px 4.7px;
+  width: 250px;
+  box-sizing: border-box;
+}
+.lorem-ipsum-dolor-sit-amet-consectetur-adipiscing-elit-vivamus-ut-odio-ipsum-mauris-pulvinar-rhoncus-ante-nec-tempus-eros-consectetur-non-sed-consequat-ornare-nibh-sit-amet-tempus-cras-vitae-enim-enim-aenean-euismod-vel-dui-sit-amet-venenatis-cras-ornare-erat-sem-lobortis-pretium-leo-malesuada-ac-in-hac-habitasse-platea-dictumst-proin-sit-amet-tempus-ante {
+  margin: 0 43.5px 40.1px 5px;
+  display: inline-block;
+  overflow-wrap: break-word;
+  font-family: 'Inria Sans';
+  font-weight: 400;
+  font-size: 32px;
+  color: #000000;
+}
+.vector-70 {
+  background: #408A7E;
+  margin-left: 26.9px;
+  width: 1012.8px;
+  height: 0px;
+}
+.group-1000004757 {
+  position: relative;
+  margin-bottom: 57.9px;
+  display: flex;
+  flex-direction: column;
+  width: fit-content;
+  box-sizing: border-box;
+}
+.annulation {
+  overflow-wrap: break-word;
+  font-family: var(--inria-font-family, 'Inria Sans');
+  font-weight: var(--inria-font-weight, 400);
+  font-size: var(--inria-font-size, 32px);
+  color: #000000;
+}
+.group-1000004898-red {
+  border-radius: 15px;
+  background: #D23B3B;
+  position: relative;
+  margin-bottom: 20px;
+  display: flex;
+  align-self: flex-start;
+  padding: 6px 17px 5px 0;
+  width: 250px;
+  box-sizing: border-box;
+}
+.lorem-ipsum-dolor-sit-amet-consectetur-adipiscing-elit-vivamus-ut-odio-ipsum-mauris-pulvinar-rhoncus-ante-nec-tempus-eros-consectetur-non-sed-consequat-ornare-nibh-sit-amet-tempus-cras-vitae-enim-enim-aenean-euismod-vel-dui-sit-amet-venenatis-cras-ornare-erat-sem-lobortis-pretium-leo-malesuada-ac-in-hac-habitasse-platea-dictumst-proin-sit-amet-tempus-ante-3 {
+  margin: 0 43.5px 40.1px 5px;
+  display: inline-block;
+  overflow-wrap: break-word;
+  font-family: 'Inria Sans';
+  font-weight: 400;
+  font-size: 32px;
+  color: #000000;
+}
+.vector-703 {
+  background: #408A7E;
+  margin-left: 26.9px;
+  width: 1012.8px;
+  height: 0px;
+}
+.group-1000004763 {
+  position: relative;
+  margin-bottom: 57.9px;
+  display: flex;
+  flex-direction: column;
+  width: fit-content;
+  box-sizing: border-box;
+}
+.retard {
+  overflow-wrap: break-word;
+  font-family: var(--inria-font-family, 'Inria Sans');
+  font-weight: var(--inria-font-weight, 400);
+  font-size: var(--inria-font-size, 32px);
+  color: #000000;
+}
+.group-1000004898-jaune {
+  border-radius: 15px;
+  background: #FFA048;
+  position: relative;
+  margin-bottom: 20px;
+  display: flex;
+  align-self: flex-start;
+  padding: 6px 9.2px 5px 0;
+  width: 250px;
+  box-sizing: border-box;
+}
+.lorem-ipsum-dolor-sit-amet-consectetur-adipiscing-elit-vivamus-ut-odio-ipsum-mauris-pulvinar-rhoncus-ante-nec-tempus-eros-consectetur-non-sed-consequat-ornare-nibh-sit-amet-tempus-cras-vitae-enim-enim-aenean-euismod-vel-dui-sit-amet-venenatis-cras-ornare-erat-sem-lobortis-pretium-leo-malesuada-ac-in-hac-habitasse-platea-dictumst-proin-sit-amet-tempus-ante-1 {
+  margin: 0 43.5px 40.1px 5px;
+  display: inline-block;
+  overflow-wrap: break-word;
+  font-family: 'Inria Sans';
+  font-weight: 400;
+  font-size: 32px;
+  color: #000000;
+}
+.vector-701 {
+  background: #408A7E;
+  margin-left: 26.9px;
+  width: 1012.8px;
+  height: 0px;
+}
+.group-1000004761 {
+  position: relative;
+  margin-bottom: 57.9px;
+  display: flex;
+  flex-direction: column;
+  width: fit-content;
+  box-sizing: border-box;
+}
+.modification-1 {
+  overflow-wrap: break-word;
+  font-family: var(--inria-font-family, 'Inria Sans');
+  font-weight: var(--inria-font-weight, 400);
+  font-size: var(--inria-font-size, 32px);
+  color: #000000;
+}
+.group-10000048982 {
+  border-radius: 15px;
+  background: #408A7E;
+  position: relative;
+  margin-bottom: 20px;
+  display: flex;
+  align-self: flex-start;
+  padding: 6px 0 5px 4.7px;
+  width: 250px;
+  box-sizing: border-box;
+}
+.lorem-ipsum-dolor-sit-amet-consectetur-adipiscing-elit-vivamus-ut-odio-ipsum-mauris-pulvinar-rhoncus-ante-nec-tempus-eros-consectetur-non-sed-consequat-ornare-nibh-sit-amet-tempus-cras-vitae-enim-enim-aenean-euismod-vel-dui-sit-amet-venenatis-cras-ornare-erat-sem-lobortis-pretium-leo-malesuada-ac-in-hac-habitasse-platea-dictumst-proin-sit-amet-tempus-ante-2 {
+  margin: 0 43.5px 40.1px 5px;
+  display: inline-block;
+  overflow-wrap: break-word;
+  font-family: 'Inria Sans';
+  font-weight: 400;
+  font-size: 32px;
+  color: #000000;
+}
+.vector-702 {
+  background: #408A7E;
+  margin-left: 26.9px;
+  width: 1012.8px;
+  height: 0px;
+}
+.group-1000004762 {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: fit-content;
+  box-sizing: border-box;
+}
+.frame-10 {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  padding: 67px 82.3px 0 0;
+  width: fit-content;
+  box-sizing: border-box;
+}
+.container-4 {
+  display: flex;
+  flex-direction: column;
+  width: 1252px;
+  box-sizing: border-box;
+}
+.container-8 {
+  display: flex;
+  flex-direction: row;
+  width: fit-content;
+  box-sizing: border-box;
+}
+.container-1 {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+.my-artist-logo-1 {
+  background: url('../assets/images/my_artist_logo_1.png') 50% / cover no-repeat;
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  width: 398px;
+  height: 180.1px;
+}

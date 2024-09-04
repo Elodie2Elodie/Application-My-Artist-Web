@@ -1,0 +1,250 @@
+.my-artist-logo-1 {
+  background: url('../images/my_artist_logo_1 copy.png') 50% / cover no-repeat;
+  position: relative;
+  margin-left: 100px;
+  margin-right: 200px;
+  width: 700px;
+  height: 300px;
+}
+.ellipse-1814 {
+  margin-bottom: 142px;
+  width: 159px;
+  height: 183px;
+}
+.ellipse-1815 {
+  margin-left: 32px;
+  width: 73px;
+  height: 70px;
+}
+.container {
+  margin: 37px 0 58px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 159px;
+  height: fit-content;
+  box-sizing: border-box;
+}
+.container-7 {
+  margin: 0 40.5px 28px 40.5px;
+  display: flex;
+  flex-direction: row;
+  width: 1193px;
+  box-sizing: border-box;
+}
+.ellipse-1820 {
+  margin-bottom: 4px;
+  width: 73px;
+  height: 70px;
+}
+.vector {
+  width: 16.7px;
+  height: 21.9px;
+}
+.riuser-fill {
+  margin: 14px 0 2.1px 0;
+  display: flex;
+  width: 25px;
+  height: 25px;
+  box-sizing: border-box;
+}
+.identifiant {
+  overflow-wrap: break-word;
+  font-family: var(--inria-font-family, 'Inria Sans');
+  font-weight: var(--inria-font-weight, 400);
+  font-size: var(--inria-font-size, 32px);
+  color: #000000;
+}
+.container-5 {
+  margin: 0 25.2px 15px 25.2px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-self: flex-start;
+  width: 373.9px;
+  box-sizing: border-box;
+}
+.vector-68 {
+  background: #408A7E;
+  width: 615.8px;
+  height: 0px;
+}
+.group-connexion-input {
+  margin-top: 19px;
+  display: flex;
+  flex-direction: column;
+  width: 615.8px;
+  height: fit-content;
+  box-sizing: border-box;
+}
+.container-8 {
+  margin: 0 279.7px 101px 0;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-self: center;
+  width: 908.8px;
+  box-sizing: border-box;
+}
+.ellipse-1818 {
+  margin: 30px 24px 83px 0;
+  width: 73px;
+  height: 70px;
+}
+.ellipse-1817 {
+  width: 159px;
+  height: 183px;
+}
+.container-1 {
+  margin-top: 75px;
+  display: flex;
+  flex-direction: row;
+  width: 256px;
+  height: fit-content;
+  box-sizing: border-box;
+}
+.vector-1 {
+  width: 16.7px;
+  height: 21.9px;
+}
+.mdipassword {
+  margin: 14px 0 2.1px 0;
+  display: flex;
+  width: 25px;
+  height: 25px;
+  box-sizing: border-box;
+}
+.mot-de-passe {
+  overflow-wrap: break-word;
+  font-family: var(--inria-font-family, 'Inria Sans');
+  font-weight: var(--inria-font-weight, 400);
+  font-size: var(--inria-font-size, 32px);
+  color: #000000;
+}
+.container-3 {
+  margin: 0 25.2px 15px 25.2px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-self: flex-start;
+  width: 408px;
+  box-sizing: border-box;
+}
+.vector-681 {
+  background: #408A7E;
+  width: 615.8px;
+  height: 0px;
+}
+.group-connexion-input-1 {
+  margin: 37px 129.2px 148px 0;
+  display: flex;
+  flex-direction: column;
+  width: 615.8px;
+  height: fit-content;
+  box-sizing: border-box;
+}
+.ellipse-1819 {
+  margin: 0 35px 132px 35px;
+  align-self: flex-start;
+  width: 73px;
+  height: 70px;
+}
+.je-nai-pas-encore-de-compte {
+  position: relative;
+  overflow-wrap: break-word;
+  font-family: 'Inria Sans';
+  font-weight: 400;
+  font-size: 32px;
+  text-decoration-line: underline;
+  color: #408A7E;
+}
+.container-9 {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+.container-6 {
+  margin-bottom: 18px;
+  display: flex;
+  flex-direction: row;
+  box-sizing: border-box;
+}
+.container-4 {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 1688.5px;
+  box-sizing: border-box;
+}
+.container-2 {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  width: 1688.5px;
+  height: fit-content;
+  box-sizing: border-box;
+}
+.ellipse-1813 {
+  transform: rotate(-18.553deg);
+  position: absolute;
+  left: -363px;
+  top: -351px;
+  width: 825px;
+  height: 629px;
+}
+.ellipse-1816 {
+  transform: rotate(-18.553deg);
+  position: absolute;
+  right: 389.7px;
+  bottom: -632.8px;
+  width: 825px;
+  height: 629px;
+}
+.connexion {
+  overflow-wrap: break-word;
+  font-family: var(--inria-font-family, 'Inria Sans');
+  font-weight: var(--inria-font-weight, 400);
+  font-size: var(--inria-font-size, 32px);
+  color: #000000;
+}
+.group-bouton {
+  border-radius: 25px;
+  border: 1px solid #408A7E;
+  background: #FFFFFF;
+  position: absolute;
+  right: 795px;
+  bottom: 200px;
+  display: flex;
+  padding: 24px 0.1px 24px 0;
+  width: 200px;
+  box-sizing: border-box;
+}
+
+.input-container {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  position: relative;
+}
+.custom-input {
+  width: 400px;
+  height: 50px;
+  margin-left: 47%;
+  font-size: 16px;
+  border: none;
+  border-bottom: 2px solid green;
+  outline: none;
+  transition: border-color 0.3s ease-in-out;
+  box-sizing: border-box;
+}
+
+.custom-input::placeholder {
+  font-size: 24px; /* Adjust this size as needed */
+  color: #a0a0a0; /* Optional: change the color of the placeholder text */
+}
+
+
+.custom-input:focus {
+  border-bottom: 2px solid darkgreen;
+}
