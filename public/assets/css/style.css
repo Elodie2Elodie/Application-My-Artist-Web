@@ -26323,5 +26323,13 @@ dl li {
   height: 27.6px;
 }
 
-
+.center-flex {
+  display: flex;
+  align-items: center; /* Centre verticalement */
+  justify-content: center; /* Centre horizontalement */
+  height: 100px; /* Hauteur de l'élément pour voir le centrage vertical */
+  width: 660px;
+  color: white; /* Couleur du texte */
+  color: black;
+}
 /*# sourceMappingURL=maps/style.css.map */

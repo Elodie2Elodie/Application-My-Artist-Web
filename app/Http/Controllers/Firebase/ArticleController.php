@@ -73,7 +73,7 @@ class ArticleController extends Controller
         // Validation des fichiers
         $request->validate([
             'libelle' => 'required|string',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,avif|max:2048',
         ]);
 
         try {

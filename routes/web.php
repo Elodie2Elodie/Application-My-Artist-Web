@@ -1,7 +1,9 @@
 <?php
 
 use App\Http\Controllers\CommandeController;
+use App\Http\Controllers\Firebase\AuthController;
 use App\Http\Controllers\Firebase\TenueController;
+use App\Http\Controllers\Firebase\UtilisateurController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -11,29 +13,58 @@ use Illuminate\Support\Facades\Route;
 // })->name('index');
 
 
-Route::controller(CommandeController::class)->group(function () {
-    Route::post('/', 'store')->name('commandes.store');
-    Route::put('/{id}', 'update')->name('commandes.update');
-    Route::delete('/{id}', 'destroy')->name('commandes.destroy');
-    Route::get('/creation_commande', 'addCommande')->name('creation_commande');
+// Routes pour les commandes
+Route::controller(CommandeController::class)->prefix('commandes')->name('commandes.')->group(function () {
+    Route::post('/', 'store')->name('store');
+    Route::put('/{id}', 'update')->name('update');
+    Route::delete('/{id}', 'destroy')->name('destroy');
+    Route::get('/creation', 'addCommande')->name('creation');
 });
 
-Route::controller(TenueController::class)->group(function () {
-    Route::get('/boutique', 'index_atelier')->name('boutique');
-    Route::post('/tenues', 'store')->name('tenues.store');
-    Route::get('/creation_tenue', 'addTenueView')->name('creer_tenue');
-
+// Routes pour les tenues
+Route::controller(TenueController::class)->prefix('tenues')->name('tenues.')->group(function () {
+    Route::get('/', 'index_atelier')->name('boutique');
+    Route::post('/', 'store')->name('store');
+    Route::get('/creation', 'addTenueView')->name('create');
+    Route::get('/{id}', 'show')->name('show');
+    Route::put('/{id}', 'update3')->name('update');
+    Route::put('/{id}/state', 'updateState')->name('updateState');
+    Route::get('/etat/{etat}', 'getTenuesByEtat')->name('byEtat');
+    Route::get('/epuisees', 'indexEpuises')->name('epuisees');
+    Route::get('/recherche', 'searchByName')->name('search');
+    Route::post('/{tenueId}/add-images', 'addSecondaryImages')->name('addImages');
 });
-Route::get('tenues/{id}', [TenueController::class, 'show'])->name('modifier_tenue');
-Route::put('tenues/{id}', [TenueController::class, 'update3'])->name('tenues.update');
-Route::put('/tenues/{id}/state', [TenueController::class, 'updateState'])->name('tenues.updateState');
-Route::get('/tenues/etat/{etat}', [TenueController::class, 'getTenuesByEtat'])->name('tenues.byEtat');
-Route::get('/tenues-epuisees', [TenueController::class, 'indexEpuises'])->name('tenues.epuisees');
-Route::get('/recherche-tenues', [TenueController::class, 'searchByName'])->name('tenues.search');
-Route::post('/tenue/{tenueId}/add-images', [TenueController::class, 'addSecondaryImages'])->name('tenue.addImages');
+
+Route::prefix('auth')->name('auth.')->group(function () {
+    Route::get('/showLoginForm', [AuthController::class, 'showLoginForm'])->name('showLoginForm'); // Changement en GET
+    Route::post('/login', [AuthController::class, 'login'])->name('login');
+    Route::get('/showRegisterForm', [AuthController::class, 'showRegisterForm'])->name('showRegisterForm');
+    Route::get('/logout', [AuthController::class, 'logout'])->name('logout'); 
+    Route::get('/showResetPasswordForm', [AuthController::class, 'showResetPasswordForm'])->name('showResetPasswordForm'); 
+    Route::get('/showResetPasswordFormNew', [AuthController::class, 'showResetPasswordFormNew'])->name('showResetPasswordFormNew'); 
+    Route::get('/showChangeEmailForm', [AuthController::class, 'showChangeEmailForm'])->name('showChangeEmailForm'); 
+    Route::get('/showChangePasswordForm', [AuthController::class, 'showChangePasswordForm'])->name('showChangePasswordForm'); 
+    Route::post('/changePassword', [AuthController::class, 'changePassword'])->name('changePassword'); 
+    Route::post('/updateUser', [AuthController::class, 'updateUser'])->name('updateUser'); 
+    Route::post('/resetPassword', [AuthController::class, 'resetPassword'])->name('resetPassword'); 
+    Route::post('/showResetPasswordForm', [AuthController::class, 'showResetPasswordForm'])->name('showResetPasswordForm'); 
+    Route::post('/changeEmail', [AuthController::class, 'changeEmail'])->name('changeEmail'); 
+    Route::get('/showProfilUser', [AuthController::class, 'showProfilUser'])->name('showProfilUser');
+    Route::post('/register', [AuthController::class, 'register'])->name('register');
+    Route::post('/registerUser', [AuthController::class, 'registerUser'])->name('registerUser');
+});
+
+Route::controller(UtilisateurController::class)->prefix('utilisateurs')->name('utilisateurs.')->group(function () {
+    Route::get('/agents', 'getCouturiers')->name('getCouturiers');
+});
+
+
+
+
+Route::get('/index', [AuthController::class, 'showIndex'])->name('show_index');
 
 Route::get('/', function () {
-    return view('index');
+    return view('pages.connexion');
 })->name('index');
 
 Route::get('/connexion', function () {

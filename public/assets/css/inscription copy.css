@@ -1,0 +1,117 @@
+
+.main-containery {
+    text-align: center;
+    position: relative;
+}
+
+.logo-containery {
+    top: 20%; /* Ajuste la marge selon tes besoins */
+}
+
+.logo {
+    max-width: 150px; /* Ajuste la taille du logo */
+}
+
+.containery {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    width: 500px;
+}
+
+
+.containery {
+    z-index: 10;
+    padding: 30px;
+    border-radius: 8px;
+    background-color: #f5f5f5;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    width: 600px;
+}
+
+.containery h2 {
+    margin-bottom: 50px;
+    text-shadow: 4px 4px 10px #4caf50;
+}
+
+
+
+.containery button {
+    padding: 10px 20px;
+    background-color: #4caf50; /* Bouton vert */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.containery a {
+    display: block;
+    margin-top: 10px;
+    text-decoration: none;
+    color: #4caf50; /* Lien vert */
+    font-size: 14px;
+}
+
+.containery a:hover {
+    text-decoration: underline;
+}
+
+.custome-input {
+    width: 400px;
+    height: 50px;
+    font-size: 16px;
+    border: none;
+    border-bottom: 2px solid green;
+    outline: none;
+    transition: border-color 0.3s ease-in-out;
+    box-sizing: border-box;
+  }
+  
+  .custome-input-2 {
+    margin-right: 30%;
+    width: 400px;
+    height: 50px;
+    font-size: 16px;
+    border: none;
+    border-bottom: 2px solid green;
+    outline: none;
+    transition: border-color 0.3s ease-in-out;
+    box-sizing: border-box;
+    background-color: #f5f5f5;
+  }
+  .custome-input-3 {
+    width: 600px;
+    height: 50px;
+    font-size: 16px;
+    border: none;
+    border-bottom: 2px solid green;
+    outline: none;
+    transition: border-color 0.3s ease-in-out;
+    box-sizing: border-box;
+  }
+  
+  .custome-input-4 {
+    width: 200px;
+    height: 50px;
+    font-size: 16px;
+    border: none;
+    border-bottom: 2px solid green;
+    outline: none;
+    transition: border-color 0.3s ease-in-out;
+    box-sizing: border-box;
+  }
+  
+  .custome-input::placeholder {
+    font-size: 24px; /* Adjust this size as needed */
+    color: #a0a0a0; /* Optional: change the color of the placeholder text */
+  }
+  
+  
+  .custome-input:focus {
+    border-bottom: 2px solid darkgreen;
+  }
+  
