@@ -2,6 +2,7 @@
 
 @push('styles')
     <link rel="stylesheet" href="{{ asset('assets/css/page_recus.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/popup.css') }}">
 @endpush
 
 @section('content')
@@ -29,52 +30,86 @@
                     <h4 style="margin-top: -150px;" class="reus"> 22 Clients</h4>
                     <div class="container-8">
                         <div class="group-1000004758" >
+                            @foreach ($clients as $client)
                             <div class="container-25" style="margin-bottom: 1%;">
                                 <h4 class="styl1">
-                                    Omar
+                                    {{ $client['nom'] }}
                                 </h4>
                                 <h4 class="styl1" >
-                                    +(221) 77 888 88 88
+                                    +(221) {{ $client['telephone'] }}
                                 </h4>
                                 <h4 class="styl1">
-                                    12/06/24
+                                    {{ $client['dateCrea'] }}
                                 </h4>
-                                <h4 class="styl1">
-                                    Actif
+                                <h4 class="styl1 {{ $client['etat'] === 'bloqué' ? 'etat-bloque' : 'etat-actif' }}">
+                                    {{ $client['etat'] }}
                                 </h4>
-                                <a href=""><img class="basiluser-block-solid-9" src="../assets/vectors/basiluser_block_solid_7_x2.svg" /></a>
-                                <a href="" ><img class="vector-36" src="../assets/vectors/vector_162_x2.svg" /></a>
-                                <a href="">
+                                <a href="{{ $client['etat'] === 'bloqué' ? route('utilisateurs.deblock', ['id' => $client['uid']]) : route('utilisateurs.block', ['id' => $client['uid']]) }}" >
+                                <i class="mdi {{ $client['etat'] === 'bloqué' ? 'mdi-lock' : 'mdi-lock-open' }} {{ $client['etat'] === 'bloqué' ? 'etat-bloque' : 'etat-actif' }}" ></i>
+                                </a>
+                                
+                                <a href="#" class="info-client open-popup" data-agent-id="{{ $client['uid'] }}">
                                     <div class="carbonoverflow-menu-vertical-7">
                                     <img class="vector-33" src="../assets/vectors/vector_382_x2.svg" />
                                     <img class="vector-34" src="../assets/vectors/vector_222_x2.svg" />
                                     <img class="vector-35" src="../assets/vectors/vector_474_x2.svg" />
                                     </div>
                                 </a>
-                            </div>
-                            <div class="container-25" style="margin-bottom: 1%;">
-                                <h4 class="styl1">
-                                    Omar
-                                </h4>
-                                <h4 class="styl1" >
-                                    +(221) 77 888 88 88
-                                </h4>
-                                <h4 class="styl1">
-                                    12/06/24
-                                </h4>
-                                <h4 class="styl1">
-                                    Actif
-                                </h4>
-                                <a href=""><img class="basiluser-block-solid-9" src="../assets/vectors/basiluser_block_solid_7_x2.svg" /></a>
-                                <a href="" ><img class="vector-36" src="../assets/vectors/vector_162_x2.svg" /></a>
-                                <a href="">
-                                    <div class="carbonoverflow-menu-vertical-7">
-                                    <img class="vector-33" src="../assets/vectors/vector_382_x2.svg" />
-                                    <img class="vector-34" src="../assets/vectors/vector_222_x2.svg" />
-                                    <img class="vector-35" src="../assets/vectors/vector_474_x2.svg" />
+
+                                <!-- Modal -->
+                                <div id="popup-{{ $client['uid'] }}" class="popup" style="display: none;">
+                                    <div class="popup-content group-1000004708">
+                                        <!-- Icone de fermeture en croix rouge -->
+                                        <div class="close" data-popup-id="{{ $client['uid'] }}" style=" margin-left:90%">
+                                            <i class="mdi mdi-close" style="color: red; font-size: 24px; cursor: pointer;"></i>
+                                        </div>
+                                        <div style="height:40px; width:600px; background-color:#408A7E;margin-left:2%; padding-top:1%;">
+                                            <h3 style="margin-left:25%; color:white">Informations Client</h3>
+                                        </div>
+                                        <div style="margin-top: 2%;">
+                                            <!-- Identifiant -->
+                                            <div class="input-container">
+                                                <i class="mdi mdi-account" style="font-size: 24px;"></i>
+                                                <input type="text" class="custom-input-3" placeholder="{{ $client['nom'] }}" value="{{ $client['nom'] }}" disabled/>
+
+                                            </div>
+                                        </div>
+
+                                        <!-- Nom et Prénom -->
+                                        <div style="margin-top: 2%;">
+                                            <div class="input-container">
+                                                <i class="mdi mdi-account" style="font-size: 24px;"></i>
+                                                <input type="text" class="custom-input-3" placeholder="{{ $client['prenom'] }}" value="{{ $client['prenom'] }}">
+                                            </div>
+                                        </div>
+
+                                        <!-- Numéro de téléphone -->
+                                        <div style="margin-top: 2%;">
+                                                <div class="input-container">
+                                                    <i class="mdi mdi-phone" style="font-size: 24px;"></i>
+                                                    <input type="text" class="custom-input-3" placeholder="{{ $client['telephone'] }}" value="{{ $client['telephone'] }}"  disabled>
+                                                </div>
+                                            </div>
+
+                                            <!-- date de creation-->
+                                            <div style="margin-top: 2%;">
+                                                <div class="input-container">
+                                                    <i class="mdi mdi-calendar" style="font-size: 24px;"></i>
+                                                    <input type="text" class="custom-input-3" placeholder="{{ $client['dateCrea'] }}" value="{{ $client['dateCrea'] }}"  disabled>
+                                                </div>
+                                            </div>
+
+                                            <!-- Etat -->
+                                            <div style="margin-top: 2%;">
+                                                <div class="input-container">
+                                                    <i class="mdi mdi-text {{ $client['etat'] === 'bloqué' ? 'etat-bloque' : 'etat-actif' }}" style="font-size: 24px;"></i>
+                                                    <input type="text" class="custom-input-3" placeholder="{{ $client['etat'] }}" value="{{ $client['etat'] }}"  disabled>
+                                                </div>
+                                            </div>
                                     </div>
-                                </a>
+                                </div>
                             </div>
+                            @endforeach
                             
                         </div>
                         
@@ -137,10 +172,10 @@
         <div class="client" style="padding-right: 15%;">
         Nom
         </div>
-        <div class="client"style="padding-right: 23%;">
+        <div class="client"style="padding-right: 25%;">
         Numéro
         </div>
-        <div class="client"style="padding-right: 15%;">
+        <div class="client"style="padding-right: 27%;">
         Creer le
         </div>
         <div class="client" style="padding-right: 9%;">
@@ -148,5 +183,8 @@
         </div>
         
     </div>
+    @push('scripts')
+    <script rel="stylesheet" src="{{ asset('assets/js/popup.js') }}"></script>
+    @endpush
     
 @endsection    

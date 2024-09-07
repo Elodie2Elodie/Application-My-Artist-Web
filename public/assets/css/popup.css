@@ -1,0 +1,73 @@
+/* Pour styliser le popup */
+.popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+    width: 690px;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+/* Contenu du popup */
+.popup-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Icone de fermeture (croix rouge) */
+.close i {
+    align-self: flex-end;
+    cursor: pointer;
+}
+
+/* Styles pour les champs d'entrée */
+.input-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    width: 100%;
+}
+
+.input-container i {
+    margin-right: 10px;
+    color: #408A7E;
+}
+
+.custom-input-3 {
+    width: 600px;
+    height: 50px;
+    font-size: 16px;
+    border: none;
+    border-bottom: 2px solid green;
+    outline: none;
+    transition: border-color 0.3s ease-in-out;
+    box-sizing: border-box;
+  }
+
+/* Bouton Créer */
+.group-bouton-2 {
+    background-color: #408A7E;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+}
+
+.group-bouton-2:hover {
+    background-color: #30665b;
+}
+
+.etat-bloque {
+    color: red;
+}
+
+.etat-actif {
+    color: #408A7E;
+}

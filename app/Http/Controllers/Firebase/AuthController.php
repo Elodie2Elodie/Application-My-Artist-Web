@@ -208,6 +208,30 @@ class AuthController extends Controller
                 ]
             ]);
 
+            $util=$this->getUserById($user->uid);
+
+            
+            if ($util) {
+                if ($util['etat']=='bloqué') {
+                    // Supprimer toutes les données de session
+                    session()->flush();
+
+                    // Régénérer le token CSRF pour la sécurité
+                    session()->regenerateToken();
+
+                    // Rediriger vers la page de connexion avec un message d'erreur
+                    return redirect()->route('auth.showLoginForm')->with('error', 'Vous avez etez bloqué; veuilez contacter l\'administrateur ou le super administrateur pour plus d\'informations.');
+                }
+
+                if ($util['role'] == 'couturier') {
+                    if ($util['firstConnection'] == 0) {
+                        $this->updateFirstConnection($user->uid);
+                        return redirect()->route('auth.showResetPasswordForm');
+                    }
+
+                   
+                }
+            }
             return redirect()->route('show_index');
         } catch (InvalidPassword $e) {
             return redirect()->back()->with(['error' => 'The provided credentials are incorrect.' . $e->getMessage()]);
@@ -327,7 +351,7 @@ class AuthController extends Controller
             'email' => 'required|string|email|max:150', //|unique:users
             'adress' => 'required|string|max:150',
             'telephone' => 'required|numeric|digits:9',
-            //'photo => '',
+           
         ]);
         
 
@@ -369,11 +393,21 @@ class AuthController extends Controller
                 'etat' => 'actif',
                 'dateCrea' => Carbon::now()->toDateTimeString(),
                 'firstConnection' => 0,
-                'role' => 'couturier',
+                'role' => $request->role,
+                'firstConnection' => $request->firstConnection,
             ]);
 
+            if ($request->role == 'couturier') {
+                return redirect()->route('utilisateurs.getCouturiers')->with('success', 'Utilisateur créé avec succès. Veuillez lui demander de consulter son courrier électronique pour vérifier son adresse mail.');
+            }else{
+                return response()->json(['status' => 'success', 'closePopup' => true,
+                'client' => [
+                        'uid' =>  $user->uid, // ID du client
+                        'nom' => $request->firstName,  // Nom du client
+                    ]    
+                ]);
+            }
             
-            return redirect()->back()->with('success', 'Utilisateur créé avec succès. Veuillez lui demander de consulter son courrier électronique pour vérifier son adresse mail.');
         } catch (EmailExists $e) {
             return redirect()->back()->with(['error' => 'L\' adresse email existe deja.']); //. $e->getMessage()
         } catch (\Exception $e) {
@@ -699,6 +733,50 @@ class AuthController extends Controller
         }
     }
 
+
+    public function getUserById($userId)
+    {
+        try {
+            // Accéder à la collection 'user_addresses' et récupérer le document par l'ID de l'utilisateur
+            $document = $this->firestore->database()->collection('user_addresses')->document($userId)->snapshot();
+            
+            // Vérifier si le document existe
+            if ($document->exists()) {
+                // dd($document->data());
+                // Renvoyer les données de l'utilisateur
+                return $document->data();
+                
+            } else {
+                return null;
+            }
+        } catch (\Exception $e) {
+            // Gérer les erreurs éventuelles
+            return response()->json(['error' => 'Une erreur est survenue: ' . $e->getMessage()], 500);
+        }
+    }
+
+    public function updateFirstConnection($userId)
+    {
+        try {
+            // Accéder au document de l'utilisateur dans la collection 'user_addresses'
+            $document = $this->firestore->database()->collection('user_addresses')->document($userId);
+
+            // Vérifier si le document existe
+            if ($document->snapshot()->exists()) {
+                // Mettre à jour le champ 'firstConnection' à 1
+                $document->update([
+                    ['path' => 'firstConnection', 'value' => 1]
+                ]);
+
+                
+            } else {
+                return back();
+            }
+        } catch (\Exception $e) {
+            // Gérer les erreurs éventuelles
+            return back()->withErrors(['error' => 'Une erreur est survenue : ' . $e->getMessage()], 500);
+        }
+    }
 
 }
 

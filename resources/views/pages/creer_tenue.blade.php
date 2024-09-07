@@ -5,6 +5,27 @@
 
 @section('content')
         <!-- partial -->
+        @if ($errors->any())
+            <div class="center-flex alert alert-danger" style="margin-bottom:5%; background-color: rgba(255, 0, 0, 0.5);">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+            <br>
+        @endif
+
+        @if (session('success'))
+            <div class="center-flex alert alert-success" style="margin-bottom:5%; background-color: rgba(64, 138, 126, 0.5);">
+                {{ session('success') }}
+            </div>
+        @endif
+        @if (session('error'))
+            <div class="center-flex alert alert-success" style="margin-bottom:5%;  background-color: rgba(255, 0, 0, 0.5);">
+                {{ session('error') }}
+            </div>
+        @endif
         <div>
             
           <form action="/tenues" method="POST" enctype="multipart/form-data">
@@ -144,6 +165,6 @@
       <!-- page-body-wrapper ends -->
     </div>
 @push('scripts')
-    <link rel="stylesheet" href="{{ asset('assets/js/myjs.js') }}">
+    <script rel="stylesheet" src="{{ asset('assets/js/myjs.js') }}"></script>
 @endpush
 @endsection

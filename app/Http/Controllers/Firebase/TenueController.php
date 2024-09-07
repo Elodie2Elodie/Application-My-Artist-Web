@@ -80,12 +80,13 @@ class TenueController extends Controller
         if ($request->hasFile('photo_principale')) {
             // Récupérer l'URL de la photo principale actuelle
             $currentPhotoUrl = $tenueSnapshot->get('photo_principale');
+            $atelierId=session('user.atelierId');
 
             if ($currentPhotoUrl) {
                 // Extraire le nom du fichier de l'URL
                 $pathParts = parse_url($currentPhotoUrl);
                 $oldPhotoName = basename($pathParts['path']);
-                $oldFirebaseStoragePath = 'ateliers/at1/tenues_photos/' . $oldPhotoName;
+                $oldFirebaseStoragePath = 'ateliers/'.$atelierId.'/tenues_photos/' . $oldPhotoName;
 
                 // Supprimer l'ancienne photo de Firebase Storage
                 $storage = new StorageClient([
@@ -106,7 +107,7 @@ class TenueController extends Controller
             $photoPrincipaleName = $photoPrincipale->getClientOriginalName().uniqid();
 
             // Définir le chemin de stockage
-            $firebaseStoragePath = 'ateliers/at1/tenues_photos/' . $photoPrincipaleName;
+            $firebaseStoragePath = 'ateliers/'.$atelierId.'/tenues_photos/' . $photoPrincipaleName;
 
             // Upload la photo sur Firebase Storage
             $localPath = $photoPrincipale->storeAs('firebase-temp-uploads', $photoPrincipaleName);
@@ -135,113 +136,113 @@ class TenueController extends Controller
 
     public function update2(Request $request, $id)
     {
-    // Récupérer le document de la tenue
-    $tenueDocument = $this->tenueCollection->document($id);
-    $tenueSnapshot = $tenueDocument->snapshot();
+        // Récupérer le document de la tenue
+        $tenueDocument = $this->tenueCollection->document($id);
+        $tenueSnapshot = $tenueDocument->snapshot();
 
-    // Vérifier si le document existe
-    if (!$tenueSnapshot->exists()) {
-        return response()->json(['message' => 'Tenue non trouvée'], 404);
-    }
-
-    // Valider les données reçues
-    $validatedData = $request->validate([
-        'nom' => 'sometimes|required|string|max:255',
-        'description' => 'sometimes|required|string',
-        'prix' => 'sometimes|required|numeric',
-        'taille' => 'sometimes|required|string|max:10',
-        'categorie' => 'sometimes|required|string|max:50',
-        'photo_principale' => 'nullable|image|mimes:jpeg,png,jpg,avif|max:2048', // Validation pour la photo principale
-    ]);
-
-    
-
-    // Préparer les données à mettre à jour
-    $updateData = [];
-    foreach ($validatedData as $key => $value) {
-        if (!is_null($value)) {
-            $updateData[] = [$key, $value];
+        // Vérifier si le document existe
+        if (!$tenueSnapshot->exists()) {
+            return response()->json(['message' => 'Tenue non trouvée'], 404);
         }
-    }
 
-    // Gérer la photo principale si elle est présente dans la requête
-    if ($request->hasFile('photo_principale')) {
-        // Récupérer l'URL de la photo principale actuelle
-        $currentPhotoUrl = $tenueSnapshot->get('photo_principale');
+        // Valider les données reçues
+        $validatedData = $request->validate([
+            'nom' => 'sometimes|required|string|max:255',
+            'description' => 'sometimes|required|string',
+            'prix' => 'sometimes|required|numeric',
+            'taille' => 'sometimes|required|string|max:10',
+            'categorie' => 'sometimes|required|string|max:50',
+            'photo_principale' => 'nullable|image|mimes:jpeg,png,jpg,avif|max:2048', // Validation pour la photo principale
+        ]);
 
-        if ($currentPhotoUrl) {
-            // Extraire le nom du fichier de l'URL
-            $pathParts = parse_url($currentPhotoUrl);
-            $oldPhotoName = basename($pathParts['path']);
-            $oldFirebaseStoragePath = 'ateliers/at1'. '/tenues_photos/' . $oldPhotoName;
+        
 
-            // Supprimer l'ancienne photo de Firebase Storage
-            $storage = new StorageClient([
-                'keyFilePath' => base_path(env('FIREBASE_CREDENTIALS'))
-            ]);
-            $bucket = $storage->bucket('backend-my-artist.appspot.com');
-            $object = $bucket->object($oldFirebaseStoragePath);
-
-            if ($object->exists()) {
-                $object->delete();
-            } else {
-                return response()->json(['error' => 'L\'objet n\'existe pas: ' . $oldFirebaseStoragePath], 404);
+        // Préparer les données à mettre à jour
+        $updateData = [];
+        foreach ($validatedData as $key => $value) {
+            if (!is_null($value)) {
+                $updateData[] = [$key, $value];
             }
         }
 
-        // Gérer l'upload de la nouvelle photo
-        $photoPrincipale = $request->file('photo_principale');
-        $photoPrincipaleName = time() . '_' . $photoPrincipale->getClientOriginalName();
+        // Gérer la photo principale si elle est présente dans la requête
+        if ($request->hasFile('photo_principale')) {
+            // Récupérer l'URL de la photo principale actuelle
+            $currentPhotoUrl = $tenueSnapshot->get('photo_principale');
 
-        // Définir le chemin de stockage
-        $firebaseStoragePath = 'ateliers/at1'. '/tenues_photos/' . $photoPrincipaleName;
+            if ($currentPhotoUrl) {
+                // Extraire le nom du fichier de l'URL
+                $pathParts = parse_url($currentPhotoUrl);
+                $oldPhotoName = basename($pathParts['path']);
+                $oldFirebaseStoragePath = 'ateliers/at1'. '/tenues_photos/' . $oldPhotoName;
 
-        // Upload la photo sur Firebase Storage
-        $localPath = $photoPrincipale->storeAs('firebase-temp-uploads', $photoPrincipaleName);
-        $bucket->upload(
-            fopen(storage_path('app/' . $localPath), 'r'),
-            ['name' => $firebaseStoragePath]
-        );
+                // Supprimer l'ancienne photo de Firebase Storage
+                $storage = new StorageClient([
+                    'keyFilePath' => base_path(env('FIREBASE_CREDENTIALS'))
+                ]);
+                $bucket = $storage->bucket('backend-my-artist.appspot.com');
+                $object = $bucket->object($oldFirebaseStoragePath);
 
-        // Générer l'URL de la photo principale
-        $photoPrincipaleUrl = $bucket->object($firebaseStoragePath)->signedUrl(new \DateTime('+1 year'));
-
-        // Ajouter l'URL à l'updateData
-        $updateData[] = ['photo_principale', $photoPrincipaleUrl];
-    }
-
-    dd($tenueDocument);
-    // Mettre à jour le document
-    $tenueDocument->update($updateData);
-
-    return response()->json(['message' => 'Tenue mise à jour avec succès']);
-
-    }
-
-    public function index_atelier()
-    {
-        try {
-            $atelierId="at1";
-            if (!$atelierId) {
-                return response()->json(['error' => 'ID de l\'atelier requis'], 400);
+                if ($object->exists()) {
+                    $object->delete();
+                } else {
+                    return response()->json(['error' => 'L\'objet n\'existe pas: ' . $oldFirebaseStoragePath], 404);
+                }
             }
 
-            // Filtrer les documents en fonction de l'ID de l'atelier
-            $query = $this->tenueCollection->where('ateliers_id', '=', $atelierId)->documents();
+            // Gérer l'upload de la nouvelle photo
+            $photoPrincipale = $request->file('photo_principale');
+            $photoPrincipaleName = time() . '_' . $photoPrincipale->getClientOriginalName();
 
-            $tenueList = [];
-            foreach ($query as $tenue) {
-                $tenueList[] = $tenue->data();
-            }
-            // Récupérer les documents de la collection
-            $tenues = $this->tenueCollection->documents();
-            
-            // Retourner les données des tenues en format JSON
-            return view('pages.boutique',['tenues' => $tenueList]);
-        } catch (\Exception $e) {
-            // Gérer les erreurs et retourner une réponse d'erreur appropriée
-            return redirect()->back()->withErrors(['error' => 'Erreur lors de la récupération des tenues']);
+            // Définir le chemin de stockage
+            $firebaseStoragePath = 'ateliers/at1'. '/tenues_photos/' . $photoPrincipaleName;
+
+            // Upload la photo sur Firebase Storage
+            $localPath = $photoPrincipale->storeAs('firebase-temp-uploads', $photoPrincipaleName);
+            $bucket->upload(
+                fopen(storage_path('app/' . $localPath), 'r'),
+                ['name' => $firebaseStoragePath]
+            );
+
+            // Générer l'URL de la photo principale
+            $photoPrincipaleUrl = $bucket->object($firebaseStoragePath)->signedUrl(new \DateTime('+1 year'));
+
+            // Ajouter l'URL à l'updateData
+            $updateData[] = ['photo_principale', $photoPrincipaleUrl];
         }
+
+        dd($tenueDocument);
+        // Mettre à jour le document
+        $tenueDocument->update($updateData);
+
+        return response()->json(['message' => 'Tenue mise à jour avec succès']);
+
+        }
+
+        public function index_atelier()
+        {
+            try {
+                $atelierId="at1";
+                if (!$atelierId) {
+                    return response()->json(['error' => 'ID de l\'atelier requis'], 400);
+                }
+
+                // Filtrer les documents en fonction de l'ID de l'atelier
+                $query = $this->tenueCollection->where('ateliers_id', '=', $atelierId)->documents();
+
+                $tenueList = [];
+                foreach ($query as $tenue) {
+                    $tenueList[] = $tenue->data();
+                }
+                // Récupérer les documents de la collection
+                $tenues = $this->tenueCollection->documents();
+                
+                // Retourner les données des tenues en format JSON
+                return view('pages.boutique',['tenues' => $tenueList]);
+            } catch (\Exception $e) {
+                // Gérer les erreurs et retourner une réponse d'erreur appropriée
+                return redirect()->back()->withErrors(['error' => 'Erreur lors de la récupération des tenues']);
+            }
     }
 
     public function addTenueView()  {
@@ -335,8 +336,8 @@ class TenueController extends Controller
             
         ]);
 
-        
-        $firebaseStoragePath = 'ateliers/' .'at1'. '/tenues_photos/';
+        $atelierId=session('user.atelierId');
+        $firebaseStoragePath = 'ateliers/'.$atelierId. '/tenues_photos/';
         $localfolder = public_path('firebase-temp-uploads') . '/';
     
         if (!file_exists($localfolder)) {
@@ -617,11 +618,11 @@ class TenueController extends Controller
 
             $imageUrls = [];
 
-            dd("ddddddddddddddddddd");
+            $atelierId=session('user.atelier');
 
             foreach ($request->file('images') as $image) {
                 $imageName =$image->getClientOriginalName().uniqid();
-                $imagePath = 'tenues/at1/secondaires/' . $tenueId . '/' . $imageName;
+                $imagePath = 'tenues/'.$atelierId.'/secondaires/' . $tenueId . '/' . $imageName;
 
                 // Télécharger l'image sur Firebase Storage
                 $file = fopen($image->getRealPath(), 'r');
@@ -668,8 +669,10 @@ class TenueController extends Controller
                 'keyFilePath' => base_path(env('FIREBASE_CREDENTIALS'))
             ]);
             $bucket = $storage->bucket('backend-my-artist.appspot.com');
+
+            $atelierId=session('user.atelierId');
     
-            $firebaseStoragePath = 'ateliers/' . 'at1/secondaires' . '/tenues_photos/';
+            $firebaseStoragePath = 'ateliers/'.$atelierId.'/secondaires' . '/tenues_photos/';
             $localfolder = public_path('firebase-temp-uploads') . '/';
     
             // Créer le dossier temporaire s'il n'existe pas

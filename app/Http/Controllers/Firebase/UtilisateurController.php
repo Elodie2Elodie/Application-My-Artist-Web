@@ -136,4 +136,62 @@ class UtilisateurController extends Controller
         $agents=$this->getUsersByAtelierAndRole($atelierId,$role);
         return view('pages.agents', compact('agents'));
     }
+
+    public function getClients(){
+        $atelierId = session('user.atelierId');
+        $role='client';
+        $clients=$this->getUsersByAtelierAndRole($atelierId,$role);
+        return view('pages.clients', compact('clients'));
+    }
+
+    // Bloquer un utilisateur
+    public function blockUser($id)
+    {
+        try {
+            // Met à jour le champ `is_blocked` à `true`
+            $this->updateEtat($id,'bloqué');
+
+            return redirect()->view('utilisateurs.getCouturiers')->with('success', 'Utilisateur bloqué avec succès.');
+        } catch (\Exception $e) {
+            return redirect()->back()->withErrors(['error' => 'Erreur lors du blocage de l\'utilisateur : ' . $e->getMessage()]);
+        }
+    }
+
+    
+    // Debloquer un utilisateur
+    public function deblockUser($id)
+    {
+        try {
+
+            // Met à jour le champ `is_blocked` à `true`
+            $this->updateEtat($id,'actif');
+
+            return redirect()->view('utilisateurs.getCouturiers')->with('success', 'Utilisateur débloqué avec succès.');
+        } catch (\Exception $e) {
+            return redirect()->back()->withErrors(['error' => 'Erreur lors du deblocage de l\'utilisateur : ' . $e->getMessage()]);
+        }
+    } 
+
+    public function updateEtat($userId,$etat)
+    {
+        try {
+            // Accéder au document de l'utilisateur dans la collection 'user_addresses'
+            $document = $this->firestore->database()->collection('user_addresses')->document($userId);
+
+            // Vérifier si le document existe
+            if ($document->snapshot()->exists()) {
+                // Mettre à jour le champ 'firstConnection' à 1
+                $document->update([
+                    ['path' => 'etat', 'value' => $etat]
+                ]);
+
+                
+            } else {
+                return back();
+            }
+        } catch (\Exception $e) {
+            // Gérer les erreurs éventuelles
+            return back()->withErrors(['error' => 'Une erreur est survenue : ' . $e->getMessage()], 500);
+        }
+    }
 }

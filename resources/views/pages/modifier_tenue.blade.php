@@ -182,6 +182,6 @@
       <!-- page-body-wrapper ends -->
     </div>
     @push('scripts')
-    <link rel="stylesheet" href="{{ asset('assets/js/myjs.js') }}">
+    <script rel="stylesheet" src="{{ asset('assets/js/myjs.js') }}"></script>
 @endpush
 @endsection

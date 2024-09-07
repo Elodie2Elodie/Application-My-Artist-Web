@@ -4,6 +4,7 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Purple Admin</title>
     <!-- plugins:css -->
     <link rel="stylesheet" href="{{ asset('assets/vendors/mdi/css/materialdesignicons.min.css') }}">
@@ -209,7 +210,7 @@
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="{{ route('commandes') }}">
+              <a class="nav-link" href="{{ route('commandes.showListeCommande') }}">
                 <!-- <i class="mdi mdi-home menu-icon"></i> -->
                  <img class="taille-icone" src="{{ asset('assets/vectors/product_5_x2.svg') }}" alt="">
                 <span class="menu-title" style="color: black;">Commandes</span>
@@ -217,7 +218,7 @@
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="{{ route('avis') }}">
+              <a class="nav-link" href="{{ route('commentaires.getCommentaires') }}">
                 <!-- <i class="mdi mdi-home menu-icon"></i> -->
                  <img class="taille-icone" src="{{ asset('assets/vectors/guarantee_13_x2.svg') }}" alt="">
                 <span class="menu-title" style="color: black;">Notes et Avis</span>
@@ -233,7 +234,7 @@
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="{{ route('clients') }}">
+              <a class="nav-link" href="{{ route('utilisateurs.getClients') }}">
                   <!-- <i class="mdi mdi-home menu-icon"></i> -->
                   <img class="taille-icone" src="{{ asset('assets/vectors/document_318_x2.svg') }}" alt="">
                   <span class="menu-title" style="color: black;">Clients</span>   
