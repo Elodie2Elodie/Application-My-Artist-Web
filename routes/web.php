@@ -62,6 +62,8 @@ Route::controller(CommandeController::class)->prefix('commandes')->name('command
     Route::get('/showFornulaireCommande', 'showFornulaireCommande')->name('showFornulaireCommande');
     Route::get('/showListeCommande', 'showListeCommande')->name('showListeCommande');
     Route::post('/createCommande', 'createCommande')->name('createCommande');
+    Route::get('/showModifyCommande/{id}', 'showModifyCommande')->name('showModifyCommande');
+    Route::post('/updateCommande', 'updateCommande')->name('updateCommande');
 });
 
 Route::get('/index', [AuthController::class, 'showIndex'])->name('show_index');
@@ -73,6 +75,10 @@ Route::get('/', function () {
 Route::get('/connexion', function () {
     return view('pages/connexion');
 })->name('connexion');
+
+Route::post('/ok', function () {
+    dd('ok');
+})->name('ok');
 
 Route::get('/inscription', function () {
     return view('pages/inscription');

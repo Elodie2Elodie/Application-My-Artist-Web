@@ -6,20 +6,26 @@
 
 @section('content')
         <!-- partial -->
+        @php
+        $photoCommande = $commande['photoCommande'] ?? '';
+        @endphp
         <div>
             <div class="container-3">
-                <div class="rectangle-34625156" style="background: url('assets/images/rectangle_34625156.png') 50% / cover no-repeat; margin-left:10%">
-                    <div style="width: 40px; height:40px; background-color:#408A7E; margin-top:95%; border-radius:5px; margin-left:90%; display: flex; align-items: center; justify-content: center;" >
+                <div class="rectangle-34625156"  style="background: url('{{ $photoCommande }}') 50% / cover no-repeat; border: 1px solid #408A7E;" >
+                    <div style="width: 40px; height:40px; background-color:#408A7E; margin-top:95%; border-radius:5px; margin-left:90%;  display: flex; align-items: center; justify-content: center;" >
                     <i class="mdi mdi-pencil"></i>
                     </div>
                 </div>
+                <input type="file" id="fileInput" style="display: none;"  name="photo_commande" />
+                <input type="text" style="display: none;" name="commandeId" id="commandeId" class="custom-input-2" placeholder="{{ old('commandeId',$commande['commandeId'] ?? '') }}" value="{{ old('commandeId',$commande['commandeId'] ?? '') }}"> 
+                @error('photo_commande')
+                    <span class="text-danger">{{ $message }}</span>
+                @enderror
                 <div class="container-8">
                 <div style="margin-top: 2%;">
                     <div class="input-container">
                         <i class="mdi mdi-account" style="font-size: 24px;"></i>
-                        <select name="" id="" class="custom-input">
-                            <option value="" class="creer" >Choisir un client</option>
-                        </select>  
+                        <input type="text" disabled name="clientId" id="clientId" class="custom-input-2" placeholder="{{ old('nomClient',$commande['nomClient'] ?? '') }}" value="{{ old('nomClient',$commande['nomClient'] ?? '') }}"> 
                     </div>
                 </div>
                                        
@@ -37,7 +43,7 @@
                     </div>
 
                 </div>
-                    <a class="group-bouton" style="text-decoration: none;  margin-right:10%;">
+                    <a class="group-bouton" id="modifierCommande" style="text-decoration: none;  margin-right:10%; cursor: pointer;">
                         <span class="creer" style="margin-top: 2%;">
                             Modifier
                         </span>
@@ -45,23 +51,71 @@
             </div>
             <div style="margin-top: 2%;">
                 <div class="input-container">
-                    <i class="mdi mdi-text" style="margin-left: 30%;font-size: 24px;"></i>
-                    <input type="text" class="custom-input-2" placeholder="Nom de la tenue">
+                    <i class="mdi mdi-text" style="margin-left: 20%;font-size: 24px;"></i>
+                    <input type="text" class="custom-input-2" placeholder="{{ old('nomCommande',$commande['nomCommande'] ?? '') }}" value="{{ old('nomCommande',$commande['nomCommande'] ?? '') }}">
                 </div>
             </div>
             <div style="margin-top: 2%;">
                 <div class="input-container">
-                    <i class="mdi mdi-account" style="margin-left: 30%;font-size: 24px;"></i>
+                    <i class="mdi mdi-account" style="margin-left: 20%;font-size: 24px;"></i>
                     <!-- <input type="text" class="custom-input-2" placeholder="Nom"> -->
-                    <select name="" id="" class="custom-input-2">
+                    <select name="couturierId" id="" class="custom-input-2">
                         <option value="" >Choisir le couturier</option>
+                        @foreach ($couturiers as $couturier)
+                        <option value="{{ $couturier['uid'] }}" {{ old("couturierId", $commande['couturierId'] ?? '') == $couturier['uid'] ? 'selected' : '' }} >{{ $couturier['nom'] }}</option>
+                        @endforeach
+                        @error('couturierId')
+                            <span class="text-danger">{{ $message }}</span>
+                        @enderror
                     </select>
                 </div>
             </div>
             <div style="margin-top: 2%;">
                 <div class="input-container">
-                    <i class="mdi mdi-calendar" style="margin-left: 30%; font-size: 24px;"></i>
-                    <input type="text" class="custom-input-2" placeholder="Date de finition">
+                    <i class="mdi mdi-calendar" style="margin-left: 20%; font-size: 24px;"></i>
+                    <input type="date" name="dateDebut" id="dateDebut" class="custom-input-2"  placeholder="{{ old('dateDebut',$commande['dateDebut'] ?? '') }}" value="{{ old('dateDebut',$commande['dateDebut'] ?? '') }}">
+
+                    @error('dateDebut')
+                      <span class="text-danger">{{ $message }}</span>
+                    @enderror
+                </div>
+            </div>
+            <div style="margin-top: 2%;">
+                <div class="input-container">
+                    <i class="mdi mdi-calendar" style="margin-left: 20%; font-size: 24px;"></i>
+                    <input type="date" name="dateFin" id="dateFin" class="custom-input-2" placeholder="{{ old('dateFin',$commande['dateFin'] ?? '') }}" value="{{ old('dateFin',$commande['dateFin'] ?? '') }}">
+
+                    @error('dateFin')
+                      span class="date-danger">{{ $message }}</span>
+                    @enderror
+                </div>
+            </div>
+            <div style="margin-top: 2%;">
+                <div class="input-container">
+                    <i class="mdi mdi-account" style="margin-left: 20%;font-size: 24px;"></i>
+                    <!-- <input type="text" class="custom-input-2" placeholder="Nom"> -->
+                    <select name="paiement"  id="paiementSelect" class="custom-input-2">
+                        <option value="" >La commande est elle payée</option>
+                        <option value="payer" {{ old("paiement", $commande['paiement'] ?? '') == 'payer' ? 'selected' : '' }} >payer</option>
+                        <option value="non payer" {{ old("paiement", $commande['paiement'] ?? '') == 'non payer' ? 'selected' : '' }} >non payer</option>
+                        @error('paiement')
+                            <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </select>
+                </div>
+            </div>
+            <div style="margin-top: 2%;" id="modePaiementContainer" hidden>
+                <div class="input-container">
+                    <i class="mdi mdi-account" style="margin-left: 20%;font-size: 24px;"></i>
+                    <!-- <input type="text" class="custom-input-2" placeholder="Nom"> -->
+                    <select name="modePaiement" id="modePaiementSelect" class="custom-input-2">
+                        <option value="Orange" {{ old("modePaiement", $commande['modePaiement'] ?? '') == 'Orange' ? 'selected' : '' }} >Orange</option>
+                        <option value="Wave" {{ old("modePaiement", $commande['modePaiement'] ?? '') == 'Wave' ? 'selected' : '' }} >Wave</option>
+                        <option value="Espèces" {{ old("modePaiement", $commande['modePaiement'] ?? '') == 'Espèces' ? 'selected' : '' }} >Espèces</option>
+                        @error('modePaiement')
+                            <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </select>
                 </div>
             </div>
             <div style="height:80px; width:1150px; background-color:#408A7E; margin-top:5%; margin-left:3%; padding-top:1.5%;">
@@ -76,50 +130,22 @@
                       <input type="text" class="form-control todo-list-input" placeholder="Avez vous une nouvelle tâches à ajouter?">
                       <button class="add btn bg-gradient-green font-weight-bold todo-list-add-btn" id="add-task">Ajouter</button>
                     </div>
+                    @php
+                    $taches = json_decode($commande['taches'], true);
+                    @endphp
                     <div class="list-wrapper">
                       <ul class="d-flex flex-column-reverse todo-list todo-list-custom">
-                        <li>
+                      @foreach ($taches as $tache)
+                        <li class="{{ $tache['completed'] === 'fait' ? 'completed' : '' }}">
                           <div class="form-check">
                             <label class="form-check-label">
-                              <input class="checkbox" type="checkbox"> Découpage</label>
+                              <input class="checkbox" type="checkbox" {{ $tache['completed'] === 'fait' ? 'checked' : '' }}>
+                              {{ $tache['text'] }}
+                            </label>
                           </div>
                           <i class="remove mdi mdi-close-circle-outline"></i>
                         </li>
-                        <li class="completed">
-                          <div class="form-check">
-                            <label class="form-check-label">
-                              <input class="checkbox" type="checkbox" checked> Assemblage du haut</label>
-                          </div>
-                          <i class="remove mdi mdi-close-circle-outline"></i>
-                        </li>
-                        <li>
-                          <div class="form-check">
-                            <label class="form-check-label">
-                              <input class="checkbox" type="checkbox"> Assemblage du bas</label>
-                          </div>
-                          <i class="remove mdi mdi-close-circle-outline"></i>
-                        </li>
-                        <li>
-                          <div class="form-check">
-                            <label class="form-check-label">
-                              <input class="checkbox" type="checkbox">Couture premier niveau</label>
-                          </div>
-                          <i class="remove mdi mdi-close-circle-outline"></i>
-                        </li>
-                        <li class="completed">
-                          <div class="form-check">
-                            <label class="form-check-label">
-                              <input class="checkbox" type="checkbox" checked>Deuxieme couture </label>
-                          </div>
-                          <i class="remove mdi mdi-close-circle-outline"></i>
-                        </li>
-                        <li>
-                          <div class="form-check">
-                            <label class="form-check-label">
-                              <input class="checkbox" type="checkbox"> Surfilage </label>
-                          </div>
-                          <i class="remove mdi mdi-close-circle-outline"></i>
-                        </li>
+                      @endforeach
                       </ul>
                     </div>
                   </div>
@@ -131,7 +157,7 @@
         <div  id="myPopup" class="popup">
           <div class="group-1000004708 popup-content" style="width: 900px; height: 670px; margin-bottom: 5%">
               <div class="mingcuteclose-fill close">
-                <img class="vector-97" src="../assets/vectors/vector_72_x2.svg" />
+                <img class="vector-97" src="{{ asset('assets/vectors/vector_72_x2.svg') }}" />
               </div>
               <div style="display: flex; flex-direction: row;">
                 <div style="display: flex; flex-direction: column; margin-right:5%;">
@@ -287,4 +313,8 @@
       </div>
       <!-- page-body-wrapper ends -->
     </div>
+  @push('scripts')
+    <script src="{{ asset('assets/js/popup_script.js') }}"></script>
+    <script rel="stylesheet" src="{{ asset('assets/js/myjs.js') }}"></script>
+  @endpush
 @endsection

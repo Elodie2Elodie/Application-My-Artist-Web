@@ -44,24 +44,43 @@ window.onclick = function(event) {
     })
     .then(response => response.json())
     .then(data => {
-      if (data.status === 'success' && data.closePopup) {
-        document.getElementById('myPopup').style.display = 'none';
-      }
+        if (data.status === 'success') {
+            // Fermer le popup si nécessaire
+            if (data.closePopup) {
+                document.getElementById('myPopup').style.display = 'none';
+            }
+
+            const newClientId = data.client.uid;
+            const newClientName = data.client.nom;
+            handleClientCreated(newClientId, newClientName);
+            
+        }
+        
     })
     .catch(error => {
-      console.error('Erreur:', error);
+        console.error('Erreur:', error);
     });
+
+    
+    
 });
+
 
  // Fonction qui sera appelée après la création du client
  function handleClientCreated(newClientId, newClientName) {
-    // Vider les champs du formulaire
-    document.querySelectorAll('.custom-input').forEach(input => {
-        input.value = '';
-    });
+    
+    // Vider chaque champ du formulaire individuellement
+    document.querySelector('input[name="firstName"]').value = '';
+    document.querySelector('input[name="lastName"]').value = '';
+    document.querySelector('input[name="email"]').value = '';
+    document.querySelector('input[name="adress"]').value = '';
+    document.querySelector('input[name="telephone"]').value = '';
+    document.querySelector('input[name="role"]').value = ''; // Pour un select
 
     // Sélectionner automatiquement le nouveau client dans le select
     let clientSelect = document.getElementById('clientSelect');
+
+    console.log(clientSelect);
     // Créer une nouvelle option pour le client
     let newOption = document.createElement('option');
     newOption.value = newClientId;
@@ -72,6 +91,8 @@ window.onclick = function(event) {
     
     // Sélectionner le nouveau client
     clientSelect.value = newClientId;
+
+    newOption.selected = true; 
 }
 
 // Exemple d'utilisation de cette fonction après une soumission réussie

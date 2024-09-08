@@ -94,7 +94,7 @@
             
             <div class="frame-liste-commande" style="margin-left: 28%; margin-top:15%">
               @foreach($commandes as $commande)
-              <a class="group-commandes-4" style="text-decoration: none;" href="#">
+              <a class="group-commandes-4" style="text-decoration: none;" href="{{ route('commandes.showModifyCommande', ['id' => $commande['commandeId']]) }}">
                 <div class="container-29">
                 <img src="{{ $commande['photoCommande'] }}" class="rectangle-346251564" />
                   <div class="container-31">
@@ -114,12 +114,20 @@
                       {{ $commande['nomCommande']}}
                       </span>
                     </div>
-                    <div class="couturier-4">
-                    Date de fin:
-                    </div>
-                    <div class="container-62">
-                      <span class="modou-4">
+                    <div class="container-47">
+                      <span class="commande-4">
+                      Date de fin :
+                      </span>
+                      <span class="c-0005">
                       {{ $commande['dateFin']}}
+                      </span>
+                    </div>
+                    <div class="container-47">
+                      <span class="commande-4">
+                      paiement :
+                      </span>
+                      <span class="c-0005">
+                      {{ $commande['paiement'] }} {{  $commande['paiement'] == '' ? '' : 'par '. $commande['modePaiement'] }}
                       </span>
                     </div>
                     <div class="container-35">
@@ -127,7 +135,7 @@
                       Progression:
                       </span>
                       <h4 class="container-4">
-                      33,33  %
+                      {{ $commande['progression'] . ' %' }} 
                       </h4>
                     </div>
                   </div>

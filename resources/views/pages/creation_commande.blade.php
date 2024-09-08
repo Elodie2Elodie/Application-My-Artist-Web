@@ -31,8 +31,8 @@
         @endif
         
             <div class="container-3">
-              <form action="{{ route('commandes.createCommande') }}" enctype="multipart/form-data" style="display: contents;" method="POST">
-                @csrf
+              <form action="" enctype="multipart/form-data" style="display: contents;" method="POST">
+                
                 <div class="rectangle-34625156" style="background: url('assets/images/rectangle_34625156.png') 50% / cover no-repeat; border: 1px solid #408A7E">
                     <div id="uploadIcon" style="width: 40px; height:40px; background-color:#408A7E; margin-top:80%; border-radius:5px; margin-left:90%; display: flex; align-items: center; justify-content: center;" >
                     <i class="mdi mdi-pencil"></i>
@@ -46,14 +46,14 @@
                   <div style="margin-top: 2%;">
                     <div class="input-container">
                         <i class="mdi mdi-account" style="font-size: 24px;"></i>
-                        <select name="client_id" id="clientSelect" class="custom-input" >
+                        <select name="clientId" id="clientSelect" class="custom-input" >
                             <option value="" >Choisir un client</option>
                             @foreach ($clients as $client)
                             <option value="{{ $client['uid'] }}" >{{ $client['nom'] }}</option>
                             @endforeach
                         </select>  
                         
-                        @error('client_id')
+                        @error('clientId')
                           <span class="text-danger">{{ $message }}</span>
                         @enderror
                     </div>
@@ -66,7 +66,7 @@
                         </span>
                     </a>
                 </div>
-                    <button type="submit" class="group-bouton" style="text-decoration: none; margin-right:5%;">
+                    <button id="submit-tasks" class="group-bouton" style="text-decoration: none; margin-right:5%;">
                         <span class="creer" style="margin-top: 2%;">
                             Creer
                         </span>
@@ -90,7 +90,7 @@
             <div style="margin-top: 2%;">
                 <div class="input-container">
                     <i class="mdi mdi-calendar" style="margin-left: 20%; font-size: 24px;"></i>
-                    <input type="date" name="dateDebut" class="custom-input-2" placeholder="Date de debut">
+                    <input type="date" name="dateDebut" id="dateDebut" class="custom-input-2" placeholder="Date de debut">
                     @error('dateDebut')
                       <span class="text-danger">{{ $message }}</span>
                     @enderror
@@ -99,13 +99,41 @@
             <div style="margin-top: 2%;">
                 <div class="input-container">
                     <i class="mdi mdi-calendar" style="margin-left: 20%; font-size: 24px;"></i>
-                    <input type="date" name="dateFin" class="custom-input-2" placeholder="Date de fin">
+                    <input type="date" name="dateFin" id="dateFin" class="custom-input-2" placeholder="Date de fin">
                     @error('dateFin')
                       span class="date-danger">{{ $message }}</span>
                     @enderror
                 </div>
             </div>
-            
+            <div style="margin-top: 2%;">
+                <div class="input-container">
+                    <i class="mdi mdi-account" style="margin-left: 20%;font-size: 24px;"></i>
+                    <!-- <input type="text" class="custom-input-2" placeholder="Nom"> -->
+                    <select name="paiement"  id="paiementSelect" class="custom-input-2">
+                        <option value="" >La commande est elle payée ? </option>
+                        <option value="payer" >payer</option>
+                        <option value="non payer" >non payer</option>
+                        @error('paiement')
+                            <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </select>
+                </div>
+            </div>
+            <div id="modePaiementContainer" style="margin-top: 2%;" hidden >
+                <div class="input-container">
+                    <i class="mdi mdi-account" style="margin-left: 20%;font-size: 24px;"></i>
+                    <!-- <input type="text" class="custom-input-2" placeholder="Nom"> -->
+                    <select name="modePaiement" id="modePaiementSelect" class="custom-input-2">
+                        <option value="" >Quel est le mode de paiement?</option>
+                        <option value="Orange" >Orange</option>
+                        <option value="Wave" >Wave</option>
+                        <option value="Espèces" >Espèces</option>
+                        @error('modePaiement')
+                            <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </select>
+                </div>
+            </div>
             </form>
             <div style="height:80px; width:1150px; background-color:#408A7E; margin-top:5%; margin-left:3%; padding-top:1.5%;">
                 <h1 style="margin-left:45%; ">Tâches</h1>
@@ -121,48 +149,7 @@
                     </div>
                     <div class="list-wrapper">
                       <ul class="d-flex flex-column-reverse todo-list todo-list-custom">
-                        <li>
-                          <div class="form-check">
-                            <label class="form-check-label">
-                              <input class="checkbox" type="checkbox"> Découpage</label>
-                          </div>
-                          <i class="remove mdi mdi-close-circle-outline"></i>
-                        </li>
-                        <li class="completed">
-                          <div class="form-check">
-                            <label class="form-check-label">
-                              <input class="checkbox" type="checkbox" checked> Assemblage du haut</label>
-                          </div>
-                          <i class="remove mdi mdi-close-circle-outline"></i>
-                        </li>
-                        <li>
-                          <div class="form-check">
-                            <label class="form-check-label">
-                              <input class="checkbox" type="checkbox"> Assemblage du bas</label>
-                          </div>
-                          <i class="remove mdi mdi-close-circle-outline"></i>
-                        </li>
-                        <li>
-                          <div class="form-check">
-                            <label class="form-check-label">
-                              <input class="checkbox" type="checkbox">Couture premier niveau</label>
-                          </div>
-                          <i class="remove mdi mdi-close-circle-outline"></i>
-                        </li>
-                        <li class="completed">
-                          <div class="form-check">
-                            <label class="form-check-label">
-                              <input class="checkbox" type="checkbox" checked>Deuxieme couture </label>
-                          </div>
-                          <i class="remove mdi mdi-close-circle-outline"></i>
-                        </li>
-                        <li>
-                          <div class="form-check">
-                            <label class="form-check-label">
-                              <input class="checkbox" type="checkbox"> Surfilage </label>
-                          </div>
-                          <i class="remove mdi mdi-close-circle-outline"></i>
-                        </li>
+                        
                       </ul>
                     </div>
                   </div>

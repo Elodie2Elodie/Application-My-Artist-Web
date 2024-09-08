@@ -41,6 +41,7 @@ class CommandeController extends Controller
         try {
             $query = $user_addressesCollection->where('atelierId', '=', $atelierId)
                                 ->where('role', '=', $role)
+                                ->where('etat', '=', 'actif')
                                 ->documents();
 
             $users = [];
@@ -79,16 +80,112 @@ class CommandeController extends Controller
     // Créer une nouvelle commande
     public function createCommande(Request $request)
     {
-        // dd('ok');
         $request->validate([
             'couturierId' => 'required|string',
+            'clientId' => 'required|string',
+            'paiement' => 'required',
+            // 'modePaiement' => 'nullable|required',
             'dateDebut' => ['required', 'date', 'after_or_equal:today'],
             'dateFin' => ['required', 'date', 'after_or_equal:dateDebut'],
             // 'etat' => 'required|string',
             // 'progression' => 'required|numeric|min:0|max:100', // Ajout du paramètre progression
             // 'status' => 'required|string', // Ajout du paramètre étatProgression
         ]);
+
+        // var_dump('ok');
+
+        if ($request->hasFile('photo_commande')) {
+            $atelierId = session('user')['atelierId'];
+            $firebaseStoragePath = 'ateliers/' .$atelierId. '/commandes/';
+            $localfolder = public_path('firebase-temp-uploads') . '/';
+        
+            if (!file_exists($localfolder)) {
+                mkdir($localfolder, 0777, true);
+            }
+        
+            $storage = (new Factory)
+            ->withServiceAccount(base_path(env('FIREBASE_CREDENTIALS')))
+            ->createStorage();
+
+            $storageClient = $storage->getStorageClient();
+            $bucket = $storageClient->bucket('backend-my-artist.appspot.com');
+        
+            // 1. Gérer la photo de la commande
+            $photoCommande = $request->file('photo_commande');
+            $photoCommandeName = $photoCommande->getClientOriginalName().uniqid();
+            $localfile = $localfolder . $photoCommandeName;
+            $photoCommande->move($localfolder, $photoCommandeName);
+        
+            $bucket->upload(
+                fopen($localfile, 'r'),
+                ['name' => $firebaseStoragePath . $photoCommandeName]
+            );
+        
+            $photoCommandeUrl = $bucket->object($firebaseStoragePath . $photoCommandeName)->signedUrl(new \DateTime('+1 year'));
+        
+            if (file_exists($localfile)) {
+                unlink($localfile);
+            }
+        }else {
+            $photoCommandeUrl='';
+        }
+
+        try {
+            $commandeRef = $this->commandes->newDocument();
+            // Récupération de l'ID de la commande après la création du document
+            $commandeId = $commandeRef->id();
+
+            // Générer le nom de la commande : 'com' + 4 premières lettres de l'ID
+            $nomCommande = 'com' . substr($commandeId, 0, 4);
+            $couturier= $this->getUserById($request->input('couturierId'));
+            $client= $this->getUserById($request->input('clientId'));
+            $atelierId = session('user.atelierId');
+            // Récupérer les tâches depuis la requête
+            $taches = $request->input('taches', []);
+            $pourcentage = $this->trouveProgression($taches);
+
+            $commandeRef->set([
+                'photoCommande' => $photoCommandeUrl,
+                'nomCommande' => $nomCommande,
+                'commandeId' => $commandeId,
+                'couturierId' => $request->input('couturierId'),
+                'nomCouturier' => $couturier['nom'],
+                'atelierId' => $atelierId,
+                'clientId' => $request->input('clientId'),
+                'nomClient' => $client['nom'],
+                'dateDebut' => $request->input('dateDebut'),
+                'dateFin' => $request->input('dateFin'),
+                'etat' => 'confirmé',
+                'progression' => $pourcentage, // Enregistrement de la progression
+                'etatProgression' => '0', // Enregistrement de l'état de progression
+                'status' => 'Non commencé',
+                'repereProgression' => 0,
+                'modePaiement' =>  $request->input('modePaiement'),
+                'paiement' =>  $request->input('paiement'),
+                'taches' => $taches,
+            ]);
+
+            return redirect()->route('commandes.showListeCommande')->with('success', 'Commande créée avec succès.');
+        } catch (Exception $e) {
+            return redirect()->back()->withErrors(['error' => 'Erreur lors de la création de la commande : ' . $e->getMessage()]);
+        }
+    }
+
+    // Créer une nouvelle commande
+    public function createCommande2(Request $request)
+    {
+        dd($request);
         // dd('ok');
+        $request->validate([
+            'couturierId' => 'required|string',
+            // 'clientId' => 'required|string',
+            // 'dateDebut' => ['required', 'date', 'after_or_equal:today'],
+            // 'dateFin' => ['required', 'date', 'after_or_equal:dateDebut'],
+            // 'etat' => 'required|string',
+            // 'progression' => 'required|numeric|min:0|max:100', // Ajout du paramètre progression
+            // 'status' => 'required|string', // Ajout du paramètre étatProgression
+        ]);
+        
 
         if ($request->hasFile('photo_commande')) {
             $atelierId = session('user')['atelierId'];
@@ -135,7 +232,10 @@ class CommandeController extends Controller
             // Générer le nom de la commande : 'com' + 4 premières lettres de l'ID
             $nomCommande = 'com' . substr($commandeId, 0, 4);
             $couturier= $this->getUserById($request->input('couturierId'));
+            $client= $this->getUserById($request->input('clientId'));
             $atelierId = session('user.atelierId');
+            // Récupérer les tâches depuis la requête
+            $taches = $request->input('taches', []);
 
             $commandeRef->set([
                 'photoCommande' => $photoCommandeUrl,
@@ -143,8 +243,8 @@ class CommandeController extends Controller
                 'couturierId' => $request->input('couturierId'),
                 'nomCouturier' => $couturier['nom'],
                 'atelierId' => $atelierId,
-                'clientId' => 'client1',
-                'nomClient' => 'nomClient',
+                'clientId' => $request->input('clientId'),
+                'nomClient' => $client['nom'],
                 'dateDebut' => $request->input('dateDebut'),
                 'dateFin' => $request->input('dateFin'),
                 'etat' => 'confirmé',
@@ -152,7 +252,7 @@ class CommandeController extends Controller
                 'etatProgression' => 0, // Enregistrement de l'état de progression
                 'status' => 'Non commencé',
                 'repereProgression' => 0,
-                'taches' => [],
+                'taches' => $taches,
             ]);
 
             return redirect()->route('commandes.showListeCommande')->with('success', 'Commande créée avec succès.');
@@ -160,7 +260,6 @@ class CommandeController extends Controller
             return redirect()->back()->withErrors(['error' => 'Erreur lors de la création de la commande : ' . $e->getMessage()]);
         }
     }
-
     // Afficher les détails d'une commande
     public function show($id)
     {
@@ -336,6 +435,174 @@ class CommandeController extends Controller
         } catch (Exception $e) {
             return null;
         }
+    }
+
+    public function getCommandeById($commandeId)
+    {
+        $commandesCollection = $this->firestore->database()->collection('commandes');
+
+        try {
+            $commandeDocument = $commandesCollection->document($commandeId)->snapshot();
+
+            if ($commandeDocument->exists()) {
+                // Retourner les données de la commande
+                return $commandeDocument->data();
+            } else {
+                // Gestion du cas où la commande n'existe pas
+                return ['error' => 'Commande non trouvée.'];
+            }
+        } catch (\Exception $e) {
+            // Gestion des erreurs avec un message détaillé
+            return ['error' => 'Erreur lors de la récupération de la commande : ' . $e->getMessage()];
+        }
+    }
+
+    public function showModifyCommande($commandeId){
+        $atelierId = session('user.atelierId');
+        $role1='client';
+        $role2='couturier';
+        $clients=$this->getUsersByAtelierAndRole($atelierId,$role1);
+        $couturiers=$this->getUsersByAtelierAndRole($atelierId,$role2);
+        $commande= $this->getCommandeById($commandeId);
+        return view('pages.modifier_commande', compact('commande','couturiers','clients'));
+    }
+
+    // Mettre à jour une commande existante
+public function updateCommande(Request $request){ 
+    
+    // Valider les nouvelles données de la commande
+    $request->validate([
+        'couturierId' => 'required|string',
+        'dateDebut' => ['required', 'date', 'after_or_equal:today'],
+        'dateFin' => ['required', 'date', 'after_or_equal:dateDebut'],
+        'paiement' => 'required',
+        // 'modePaiement' => 'nullable|required'
+        // Ajouter d'autres règles de validation si nécessaire
+    ]);
+
+    $commandeId = $request->commandeId;
+
+    try {
+        // Récupérer la commande à mettre à jour depuis Firestore
+        $commandeRef = $this->commandes->document($commandeId);
+        $commande = $commandeRef->snapshot();
+
+        if (!$commande->exists()) {
+            return redirect()->back()->withErrors(['error' => 'Commande introuvable.']);
+        }
+
+        // Si une nouvelle photo de commande est envoyée, on la gère
+        if ($request->hasFile('photo_commande')) {
+            $atelierId = session('user')['atelierId'];
+            $firebaseStoragePath = 'ateliers/' . $atelierId . '/commandes/';
+            $localfolder = public_path('firebase-temp-uploads') . '/';
+
+            if (!file_exists($localfolder)) {
+                mkdir($localfolder, 0777, true);
+            }
+
+            $storage = (new Factory)
+                ->withServiceAccount(base_path(env('FIREBASE_CREDENTIALS')))
+                ->createStorage();
+
+            $storageClient = $storage->getStorageClient();
+            $bucket = $storageClient->bucket('backend-my-artist.appspot.com');
+
+            // Gérer la nouvelle photo de commande
+            $photoCommande = $request->file('photo_commande');
+            $photoCommandeName = $photoCommande->getClientOriginalName() . uniqid();
+            $localfile = $localfolder . $photoCommandeName;
+            $photoCommande->move($localfolder, $photoCommandeName);
+
+            $bucket->upload(
+                fopen($localfile, 'r'),
+                ['name' => $firebaseStoragePath . $photoCommandeName]
+            );
+
+            $photoCommandeUrl = $bucket->object($firebaseStoragePath . $photoCommandeName)->signedUrl(new \DateTime('+1 year'));
+
+            if (file_exists($localfile)) {
+                unlink($localfile);
+            }
+        } else {
+            // Si aucune nouvelle photo n'est envoyée, conserver l'ancienne
+            $photoCommandeUrl = $commande->data()['photoCommande'];
+        }
+
+        // Mettre à jour les champs de la commande
+        $couturier = $this->getUserById($request->input('couturierId'));
+        $taches = $request->input('taches', []);
+        $pourcentage =  $this->trouveProgression($taches);
+
+        // Mise à jour de la commande avec les nouvelles données
+        $commandeRef->set([
+            'photoCommande' => $photoCommandeUrl,
+            'couturierId' => $request->input('couturierId'),
+            'nomCouturier' => $couturier['nom'],
+            'dateDebut' => $request->input('dateDebut'),
+            'dateFin' => $request->input('dateFin'),
+            'taches' => $taches,
+            'modePaiement' =>  $request->input('modePaiement'),
+            'paiement' =>  $request->input('paiement'),
+            'progression' => $pourcentage,
+        ], ['merge' => true]); // Le paramètre 'merge' permet de ne mettre à jour que les champs passés dans l'appel
+
+        return redirect()->route('commandes.showListeCommande')->with('success', 'Commande mise à jour avec succès.');
+    } catch (Exception $e) {
+        return redirect()->back()->withErrors(['error' => 'Erreur lors de la mise à jour de la commande : ' . $e->getMessage()]);
+    }
+}
+
+// Récupérer les commandes en fonction de leur état
+    public function getCommandesByEtat($etat)
+    {
+        try {
+            // Effectuer la requête Firestore pour récupérer les commandes avec l'état donné
+            $commandesQuery = $this->commandes->where('etat', '=', $etat);
+            $commandesSnapshots = $commandesQuery->documents();
+
+            // Initialiser un tableau pour stocker les commandes récupérées
+            $commandes = [];
+
+            foreach ($commandesSnapshots as $commande) {
+                if ($commande->exists()) {
+                    // Ajouter la commande au tableau
+                    $commandes[] = $commande->data();
+                }
+            }
+
+            // Retourner les commandes récupérées
+            return view('commandes.liste', compact('commandes'));
+
+        } catch (Exception $e) {
+            return redirect()->back()->withErrors(['error' => 'Erreur lors de la récupération des commandes : ' . $e->getMessage()]);
+        }
+    }
+
+    public function trouveProgression($taches){
+        $count = 0;
+        $countTacheFaites = 0;
+        if ($taches != '[]') {
+            $taches = json_decode($taches, true);
+            foreach ($taches as $key => $tache) {
+                $count = $count + 1;
+                if ($tache['completed'] == 'fait') {
+                    $countTacheFaites = $countTacheFaites + 1;
+                }
+            }
+        }
+
+        $pourcentage = 0;
+
+        if ($count != 0) {
+            $pourcentageParTache = 100 / $count;
+            $pourcentage = $pourcentageParTache * $countTacheFaites;
+
+            $pourcentage = number_format($pourcentage, 2);
+        }
+
+        return $pourcentage;
+        
     }
 
 }
