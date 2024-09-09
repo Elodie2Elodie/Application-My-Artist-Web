@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Firebase;
 
 use App\Http\Controllers\Controller;
+use DateTime;
 use Illuminate\Http\Request;
 use Google\Cloud\Firestore\FirestoreClient;
 use Kreait\Firebase\Factory;
@@ -143,6 +144,8 @@ class CommandeController extends Controller
             // Récupérer les tâches depuis la requête
             $taches = $request->input('taches', []);
             $pourcentage = $this->trouveProgression($taches);
+            $status =  $this->updateEtatProgression($request->dateDebut, $request->dateFin, $pourcentage);
+            $etat =  $this->etat($request->dateDebut, $request->dateFin, $pourcentage);
 
             $commandeRef->set([
                 'photoCommande' => $photoCommandeUrl,
@@ -155,10 +158,10 @@ class CommandeController extends Controller
                 'nomClient' => $client['nom'],
                 'dateDebut' => $request->input('dateDebut'),
                 'dateFin' => $request->input('dateFin'),
-                'etat' => 'confirmé',
+                'etat' => $etat,
                 'progression' => $pourcentage, // Enregistrement de la progression
                 'etatProgression' => '0', // Enregistrement de l'état de progression
-                'status' => 'Non commencé',
+                'status' => $status,
                 'repereProgression' => 0,
                 'modePaiement' =>  $request->input('modePaiement'),
                 'paiement' =>  $request->input('paiement'),
@@ -170,6 +173,8 @@ class CommandeController extends Controller
             return redirect()->back()->withErrors(['error' => 'Erreur lors de la création de la commande : ' . $e->getMessage()]);
         }
     }
+
+    
 
     // Créer une nouvelle commande
     public function createCommande2(Request $request)
@@ -533,6 +538,8 @@ public function updateCommande(Request $request){
         $couturier = $this->getUserById($request->input('couturierId'));
         $taches = $request->input('taches', []);
         $pourcentage =  $this->trouveProgression($taches);
+        $status =  $this->updateEtatProgression($request->dateDebut, $request->dateFin, $pourcentage);
+        $etat =  $this->etat($request->dateDebut, $request->dateFin, $pourcentage);
 
         // Mise à jour de la commande avec les nouvelles données
         $commandeRef->set([
@@ -545,6 +552,9 @@ public function updateCommande(Request $request){
             'modePaiement' =>  $request->input('modePaiement'),
             'paiement' =>  $request->input('paiement'),
             'progression' => $pourcentage,
+            'status' => $status,
+            'etat' => $etat,
+
         ], ['merge' => true]); // Le paramètre 'merge' permet de ne mettre à jour que les champs passés dans l'appel
 
         return redirect()->route('commandes.showListeCommande')->with('success', 'Commande mise à jour avec succès.');
@@ -603,6 +613,144 @@ public function updateCommande(Request $request){
 
         return $pourcentage;
         
+    }
+
+    public function compteTaches($taches){
+        $count = 0;
+        if ($taches != '[]') {
+            $taches = json_decode($taches, true);
+            foreach ($taches as $key => $tache) {
+                $count = $count + 1;
+            }
+        }
+
+        return $count;
+        
+    }
+
+    public function updateEtatProgression($dateDebut, $dateFin, $pourcentage) {
+
+        $dateAujourdhui = new DateTime();
+    
+        // Convertir les dates de la base (format Y-m-d) en objets DateTime
+        $dateDebut = DateTime::createFromFormat('Y-m-d', $dateDebut);
+        $dateFin = DateTime::createFromFormat('Y-m-d', $dateFin);
+        
+        if (!$dateDebut || !$dateFin) {
+            $nouvelEtatPourcentage = 'ok';
+            throw new Exception('Les dates fournies ne sont pas valides.');
+        }
+    
+        if ($dateDebut > $dateAujourdhui && $pourcentage > 0.00) {
+            $nouvelEtatPourcentage = 'Bonne progression';
+        } else {
+            $nouvelEtatPourcentage = 'Non commencé';
+            // Calculer la différence entre les deux dates
+            $interval = $dateDebut->diff($dateFin);
+            $nbJours = $interval->days;
+    
+            // Calculer le pourcentage par jour
+            $pourcentageParJour = 100 / $nbJours;
+    
+            // Calculer le nombre de jours écoulés depuis la date de début
+            $nbJoursActuels = $dateAujourdhui->diff($dateDebut)->days;
+    
+            // Calculer le pourcentage attendu jusqu'à aujourd'hui
+            $pourcentageAttendus = $pourcentageParJour * $nbJoursActuels;
+    
+            if ($dateDebut < $dateAujourdhui) {
+                if ($nbJoursActuels == $nbJours) {
+                    // Projet terminé
+                    $nouvelEtatPourcentage = ($pourcentageAttendus == $pourcentage) ? 'Fini' : 'Critique';
+                } else if ($nbJoursActuels < $nbJours / 2) {
+                    // Première moitié du projet
+                    $nouvelEtatPourcentage = ($pourcentageAttendus < $pourcentage) ? 'Mauvaise progression' : 'Bonne progression';
+                } else if ($nbJoursActuels >= $nbJours / 2) {
+                    // Deuxième moitié du projet
+                    $nouvelEtatPourcentage = ($pourcentageAttendus < $pourcentage) ? 'Mauvaise progression' : 'Bonne progression';
+                }
+            }
+        }
+    
+        return $nouvelEtatPourcentage;
+    }
+    
+        public function getCommandesByStatus($etat)
+    {
+        try {
+            // Récupérer les documents de la collection 'commandes' où le champ 'etat' correspond au paramètre fourni
+            $query = $this->firestore->database()->collection('commandes')
+                                    ->where('etat', '=', $etat)
+                                    ->documents();
+
+            $commandes = [];
+
+            // Parcourir les documents et récupérer les données
+            foreach ($query as $document) {
+                $commandes[] = $document->data();
+            }
+
+            return $commandes;
+
+        } catch (\Exception $e) {
+            // Gestion des erreurs en cas de problème lors de la récupération des commandes
+            return redirect()->back()->withErrors(['error' => 'Erreur lors de la récupération des commandes : ' . $e->getMessage()]);
+        }
+    }
+
+    public function getCommandesByDate($date)
+    {
+        try {
+            
+            // Convertir la date au format approprié pour la base de données
+            $formattedDate = date('Y-m-d', strtotime($date));
+            // Récupération des commandes en fonction de la date
+            $commandes = $this->commandes->where('dateDebut', '=', $date)->documents();
+            // dd($commandes);
+            $result = [];
+            foreach ($commandes as $commande) {
+                $result[] = $commande->data();
+            }
+            
+            return $result;
+        } catch (\Exception $e) {
+            return redirect()->back()->withErrors(['error' => 'Erreur lors de la récupération des commandes : ' . $e->getMessage()]);
+        }
+    }
+
+    public function calendrierIndex(){
+        return view('pages.calendrier');
+    }
+
+    public function updateEtat($dateDebut, $dateFin, $pourcentage) {
+
+        $dateAujourdhui = new DateTime();
+    
+        // Convertir les dates de la base (format Y-m-d) en objets DateTime
+        $dateDebut = DateTime::createFromFormat('Y-m-d', $dateDebut);
+        $dateFin = DateTime::createFromFormat('Y-m-d', $dateFin);
+        
+        if (!$dateDebut || !$dateFin) {
+            throw new Exception('Les dates fournies ne sont pas valides.');
+        }
+    
+        if ($dateDebut > $dateAujourdhui) {
+            $nouvelEtat = 'Non commencé';
+        } else {
+            $nouvelEtat = 'En cours';
+        }
+
+        if ($dateDebut > $dateAujourdhui && $pourcentage >= 100.00) {
+            $nouvelEtat = 'Terminer';   
+        }
+    
+        return $nouvelEtat;
+    }
+
+    public function showIndex(){
+        $atelierId = session('user.atelierId');
+        $commandes = $this->getAllCommandesByAtelier($atelierId);
+        return view('index', compact('commandes'));
     }
 
 }

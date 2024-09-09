@@ -26332,4 +26332,12 @@ dl li {
   color: white; /* Couleur du texte */
   color: black;
 }
+
+.selected-row {
+    background-color: blue; /* Couleur gris clair */
+}
+
+.color-red{
+  color: red;
+}
 /*# sourceMappingURL=maps/style.css.map */

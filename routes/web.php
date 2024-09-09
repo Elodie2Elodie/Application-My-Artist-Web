@@ -64,6 +64,11 @@ Route::controller(CommandeController::class)->prefix('commandes')->name('command
     Route::post('/createCommande', 'createCommande')->name('createCommande');
     Route::get('/showModifyCommande/{id}', 'showModifyCommande')->name('showModifyCommande');
     Route::post('/updateCommande', 'updateCommande')->name('updateCommande');
+    Route::get('/commandes/etat/{etat}', 'getCommandesByStatus')->name('getCommandesByStatus');
+    Route::get('/calendrier/date/{date}', 'getCommandesByDate')->name('getCommandesByDate');
+    Route::get('/index', 'showIndex')->name('showIndex');
+    Route::get('/calendrier', 'calendrierIndex')->name('calendrierIndex');
+
 });
 
 Route::get('/index', [AuthController::class, 'showIndex'])->name('show_index');

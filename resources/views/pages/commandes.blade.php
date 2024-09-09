@@ -64,26 +64,26 @@
                 </div>
             @endif
             <div class="container-1" style="margin-top: 8%; margin-bottom:8%; margin-left:50%;">
-              <button class="commandes-termins">
+              <a href="{{ route('commandes.getCommandesByStatus', ['etat' => 'Terminer']) }}" class="commandes-termins">
                 <span class="terminer">
                 Terminer
                 </span>
-              </button>
-              <button class="commandes-en-cours">
+              </a>
+              <a href="{{ route('commandes.getCommandesByStatus', ['etat' => 'En cours']) }}" class="commandes-en-cours">
                 <span class="en-cours">
                 En cours
                 </span>
-              </button>
-              <button class="commandes-annuls">
+              </a>
+              <a href="{{ route('commandes.getCommandesByStatus', ['etat' => 'Annuler']) }}" class="commandes-annuls">
                 <span class="annuler">
                 Annuler
                 </span>
-              </button>
-              <button class="commandes-en-attentes">
+              </a>
+              <a href="{{ route('commandes.getCommandesByStatus', ['etat' => 'En Attente']) }}" class="commandes-en-attentes">
                 <span class="en-attente">
                 En Attente
                 </span>
-              </button>
+              </a>
             </div>
             
             <div class="entete-tableau">
@@ -136,6 +136,22 @@
                       </span>
                       <h4 class="container-4">
                       {{ $commande['progression'] . ' %' }} 
+                      </h4>
+                    </div>
+                    <div class="container-35">
+                      <span class="progression-4">
+                      Statut:
+                      </span>
+                      <h4 class="container-4 {{ $commande['status'] == Bonne progression ? '' : color-red }}" >
+                      {{ $commande['status'] }} 
+                      </h4>
+                    </div>
+                    <div class="container-35">
+                      <span class="progression-4">
+                      Etat:
+                      </span>
+                      <h4 class="container-4">
+                      {{ $commande['etat'] }} 
                       </h4>
                     </div>
                   </div>

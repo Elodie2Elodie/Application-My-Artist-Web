@@ -9,7 +9,7 @@
               <div class="col-md-3 stretch-card grid-margin">
                 <div class="card bg-gradient-green card-img-holder text-white">
                   <div class="card-body">
-                    <img src="assets/images/dashboard/circle.svg" class="card-img-absolute" alt="circle-image" />
+                    <img src="{{ asset('assets/images/dashboard/circle.svg') }}" class="card-img-absolute" alt="circle-image" />
                     <h4 class="font-weight-normal mb-3">Commandes <i class="mdi mdi-chart-line mdi-24px float-end"></i>
                     </h4>
                     <h2 class="mb-5">$ 15,0000</h2>
@@ -20,7 +20,7 @@
               <div class="col-md-3 stretch-card grid-margin">
                 <div class="card bg-gradient-orange card-img-holder text-white">
                   <div class="card-body">
-                    <img src="assets/images/dashboard/circle.svg" class="card-img-absolute" alt="circle-image" />
+                    <img src="{{ asset('assets/images/dashboard/circle.svg') }}" class="card-img-absolute" alt="circle-image" />
                     <h4 class="font-weight-normal mb-3">Tenues <i class="mdi mdi-package mdi-24px float-end"></i>
                     </h4>
                     <h2 class="mb-5">45</h2>
@@ -31,7 +31,7 @@
               <div class="col-md-3 stretch-card grid-margin">
                 <div class="card bg-gradient-purple card-img-holder text-white">
                   <div class="card-body">
-                    <img src="assets/images/dashboard/circle.svg" class="card-img-absolute" alt="circle-image" />
+                    <img src="{{ asset('assets/images/dashboard/circle.svg') }}" class="card-img-absolute" alt="circle-image" />
                     <h4 class="font-weight-normal mb-3">Tenues <i class="mdi mdi-package mdi-24px float-end"></i>
                     </h4>
                     <h2 class="mb-5">20</h2>
@@ -42,7 +42,7 @@
               <div class="col-md-3 stretch-card grid-margin">
                 <div class="card bg-gradient-yellow card-img-holder text-white">
                   <div class="card-body">
-                    <img src="assets/images/dashboard/circle.svg" class="card-img-absolute" alt="circle-image" />
+                    <img src="{{ asset('assets/images/dashboard/circle.svg') }}" class="card-img-absolute" alt="circle-image" />
                     <h4 class="font-weight-normal mb-3">Tenues <i class="mdi mdi-package mdi-24px float-end"></i>
                     </h4>
                     <h2 class="mb-5">20</h2>
@@ -94,7 +94,7 @@
                         <tbody>
                           <tr>
                             <td>
-                              <img src="assets/images/faces/profil-1.jpg" class="me-2" alt="image"> Modou Diouf
+                              <img src="{{ asset('assets/images/faces/profil-1.jpg') }}" class="me-2" alt="image"> Modou Diouf
                             </td>
                             <td> 4 </td>
                             <td>
@@ -105,7 +105,7 @@
                           </tr>
                           <tr>
                             <td>
-                              <img src="assets/images/faces/profil-1.jpg" class="me-2" alt="image"> Latif Kaline
+                              <img src="{{ asset('assets/images/faces/profil-1.jpg') }}" class="me-2" alt="image"> Latif Kaline
                             </td>
                             <td> 5 </td>
                             <td>
@@ -116,7 +116,7 @@
                           </tr>
                           <tr>
                             <td>
-                              <img src="assets/images/faces/profil-1.jpg" class="me-2" alt="image"> Modou Diouf
+                              <img src="{{ asset('assets/images/faces/profil-1.jpg') }}" class="me-2" alt="image"> Modou Diouf
                             </td>
                             <td> 6 </td>
                             <td>
@@ -127,7 +127,7 @@
                           </tr>
                           <tr>
                             <td>
-                              <img src="assets/images/faces/profil-1.jpg" class="me-2" alt="image"> Modou Diouf
+                              <img src="{{ asset('assets/images/faces/profil-1.jpg') }}" class="me-2" alt="image"> Modou Diouf
                             </td>
                             <td> 4 </td>
                             <td>
@@ -172,7 +172,7 @@
                         <tbody>
                           <tr>
                             <td>
-                              <img src="assets/images/faces/profil-1.jpg" class="me-2" alt="image"> Modou Diouf
+                              <img src="{{ asset('assets/images/faces/profil-1.jpg') }}" class="me-2" alt="image"> Modou Diouf
                             </td>
                             <td> Comm004 </td>
                             <td> Aliou Sama </td>
@@ -185,7 +185,7 @@
                           </tr>
                           <tr>
                             <td>
-                              <img src="assets/images/faces/profil-1.jpg" class="me-2" alt="image"> Modou Diouf
+                              <img src="{{ asset('assets/images/faces/profil-1.jpg') }}" class="me-2" alt="image"> Modou Diouf
                             </td>
                             <td> Comm004 </td>
                             <td> Aliou Sama </td>
@@ -198,7 +198,7 @@
                           </tr>
                           <tr>
                             <td>
-                              <img src="assets/images/faces/profil-1.jpg" class="me-2" alt="image"> Modou Diouf
+                              <img src="{{ asset('assets/images/faces/profil-1.jpg') }}" class="me-2" alt="image"> Modou Diouf
                             </td>
                             <td> Comm004 </td>
                             <td> Aliou Sama </td>
@@ -211,7 +211,7 @@
                           </tr>
                           <tr>
                             <td>
-                              <img src="assets/images/faces/profil-1.jpg" class="me-2" alt="image"> Modou Diouf
+                              <img src="{{ asset('assets/images/faces/profil-1.jpg') }}" class="me-2" alt="image"> Modou Diouf
                             </td>
                             <td> Comm004 </td>
                             <td> Aliou Sama </td>
@@ -224,7 +224,7 @@
                           </tr>
                           <tr>
                             <td>
-                              <img src="assets/images/faces/profil-1.jpg" class="me-2" alt="image"> Modou Diouf
+                              <img src="{{ asset('assets/images/faces/profil-1.jpg') }}" class="me-2" alt="image"> Modou Diouf
                             </td>
                             <td> Comm004 </td>
                             <td> Aliou Sama </td>
@@ -258,7 +258,7 @@
                         <tbody>
                           <tr>
                             <td>
-                              <img src="assets/images/faces/profil-1.jpg" class="me-2" alt="image"> Modou Diouf
+                              <img src="{{ asset('assets/images/faces/profil-1.jpg') }}" class="me-2" alt="image"> Modou Diouf
                             </td>
                             <td> Comm004 </td>
                             <td> Aliou Sama </td>
@@ -270,7 +270,7 @@
                           </tr>
                           <tr>
                             <td>
-                              <img src="assets/images/faces/profil-1.jpg" class="me-2" alt="image"> Modou Diouf
+                              <img src="{{ asset('assets/images/faces/profil-1.jpg') }}" class="me-2" alt="image"> Modou Diouf
                             </td>
                             <td> Comm004 </td>
                             <td> Aliou Sama </td>
@@ -282,7 +282,7 @@
                           </tr>
                           <tr>
                             <td>
-                              <img src="assets/images/faces/profil-1.jpg" class="me-2" alt="image"> Modou Diouf
+                              <img src="{{ asset('assets/images/faces/profil-1.jpg') }}" class="me-2" alt="image"> Modou Diouf
                             </td>
                             <td> Comm004 </td>
                             <td> Aliou Sama </td>
@@ -294,7 +294,7 @@
                           </tr>
                           <tr>
                             <td>
-                              <img src="assets/images/faces/profil-1.jpg" class="me-2" alt="image"> Modou Diouf
+                              <img src="{{ asset('assets/images/faces/profil-1.jpg') }}" class="me-2" alt="image"> Modou Diouf
                             </td>
                             <td> Comm004 </td>
                             <td> Aliou Sama </td>
@@ -306,7 +306,7 @@
                           </tr>
                           <tr>
                             <td>
-                              <img src="assets/images/faces/profil-1.jpg" class="me-2" alt="image"> Modou Diouf
+                              <img src="{{ asset('assets/images/faces/profil-1.jpg') }}" class="me-2" alt="image"> Modou Diouf
                             </td>
                             <td> Comm004 </td>
                             <td> Aliou Sama </td>

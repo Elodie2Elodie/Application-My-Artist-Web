@@ -167,7 +167,7 @@
         <img src="{{ asset('assets\images\my_artist_logo_1.png') }}" alt="" style="margin-left: 25%;">
           <ul class="nav" style="margin-top: 20px;">
             <li class="nav-item">
-              <a class="nav-link" href="{{ route('index') }}">
+              <a class="nav-link" href="{{ route('commandes.showIndex') }}">
                 <i class="mdi mdi-home menu-icon"></i>
                 <span class="menu-title" style="color: #408A7E;">Tableau de bord</span>
                 
@@ -202,7 +202,7 @@
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="{{ route('Calendrier') }}">
+              <a class="nav-link" href="{{ route('commandes.calendrierIndex') }}">
                 <!-- <i class="mdi mdi-home menu-icon"></i> -->
                 <img class="taille-icone" class="taille-icone" src="{{ asset('assets/vectors/claritycalendar_line_28_x2.svg') }}" alt="">
                 <span class="menu-title" style="color: black;">Calendrier</span>
