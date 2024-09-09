@@ -46,6 +46,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const modePaiement = document.querySelector('select[name="modePaiement"]').value;
     const dateDebut = document.querySelector('input[name="dateDebut"]').value;
     const dateFin = document.querySelector('input[name="dateFin"]').value;
+    const prix = document.querySelector('input[name="prix"]').value;
     const role = document.querySelector('input[name="role"]').value;
     const firstConnection = document.querySelector('input[name="firstConnection"]').value;
 
@@ -55,6 +56,7 @@ document.addEventListener('DOMContentLoaded', function() {
     formData.append('couturierId', couturierId);
     formData.append('dateDebut', dateDebut);
     formData.append('dateFin', dateFin);
+    formData.append('prix', prix);
     formData.append('role', role);
     formData.append('firstConnection', firstConnection);
     formData.append('paiement', paiement);
@@ -111,6 +113,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const commandeId = document.querySelector('input[name="commandeId"]').value;
     const dateDebut = document.querySelector('input[name="dateDebut"]').value;
     const dateFin = document.querySelector('input[name="dateFin"]').value;
+    const prix = document.querySelector('input[name="prix"]').value;
     const paiement = document.querySelector('select[name="paiement"]').value;
     const modePaiement = document.querySelector('select[name="modePaiement"]').value;
 
@@ -120,6 +123,7 @@ document.addEventListener('DOMContentLoaded', function() {
     formData.append('commandeId', commandeId);
     formData.append('dateDebut', dateDebut);
     formData.append('dateFin', dateFin);
+    formData.append('prix', prix);
     formData.append('paiement', paiement);
     formData.append('modePaiement', modePaiement);
     formData.append('taches', JSON.stringify(getTasks()));

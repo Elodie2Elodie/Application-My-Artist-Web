@@ -1,3 +1,4 @@
+console.log('ok');
 $(document).ready(function() {
     // Initialisation du datepicker
     $('#inline-datepicker').datepicker({

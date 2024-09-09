@@ -73,6 +73,15 @@
             <div style="margin-top: 2%;">
                 <div class="input-container">
                     <i class="mdi mdi-calendar" style="margin-left: 20%; font-size: 24px;"></i>
+                    <input type="number" name="prix" id="prix" class="custom-input-2" placeholder="{{ old('prix',$commande['prix'] ?? '') }}" value="{{ old('prix',$commande['prix'] ?? '') }}">
+                    @error('prix')
+                      <span class="text-danger">{{ $message }}</span>
+                    @enderror
+                </div>
+            </div>
+            <div style="margin-top: 2%;">
+                <div class="input-container">
+                    <i class="mdi mdi-calendar" style="margin-left: 20%; font-size: 24px;"></i>
                     <input type="date" name="dateDebut" id="dateDebut" class="custom-input-2"  placeholder="{{ old('dateDebut',$commande['dateDebut'] ?? '') }}" value="{{ old('dateDebut',$commande['dateDebut'] ?? '') }}">
 
                     @error('dateDebut')

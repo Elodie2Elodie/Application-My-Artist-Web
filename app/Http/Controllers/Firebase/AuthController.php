@@ -223,7 +223,7 @@ class AuthController extends Controller
                     return redirect()->route('auth.showLoginForm')->with('error', 'Vous avez etez bloqué; veuilez contacter l\'administrateur ou le super administrateur pour plus d\'informations.');
                 }
 
-                if ($util['role'] == 'couturier' || $util['role'] == 'couturier') {
+                if ($util['role'] == 'couturier' || $util['role'] == 'client') {
                     if ($util['firstConnection'] == 0) {
                         $this->updateFirstConnection($user->uid);
                         return redirect()->route('auth.showResetPasswordForm');
@@ -232,7 +232,7 @@ class AuthController extends Controller
                    
                 }
             }
-            return redirect()->route('show_index');
+            return redirect()->route('commandes.showIndex');
         } catch (InvalidPassword $e) {
             return redirect()->back()->with(['error' => 'The provided credentials are incorrect.' . $e->getMessage()]);
         } catch (UserNotFound $e) {

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Firebase;
 
 use App\Http\Controllers\Controller;
+use Carbon\Carbon;
 use DateTime;
 use Illuminate\Http\Request;
 use Google\Cloud\Firestore\FirestoreClient;
@@ -86,6 +87,7 @@ class CommandeController extends Controller
             'clientId' => 'required|string',
             'paiement' => 'required',
             // 'modePaiement' => 'nullable|required',
+            'prix' => 'required',
             'dateDebut' => ['required', 'date', 'after_or_equal:today'],
             'dateFin' => ['required', 'date', 'after_or_equal:dateDebut'],
             // 'etat' => 'required|string',
@@ -166,6 +168,7 @@ class CommandeController extends Controller
                 'modePaiement' =>  $request->input('modePaiement'),
                 'paiement' =>  $request->input('paiement'),
                 'taches' => $taches,
+                'prix' => $request->input('prix'),
             ]);
 
             return redirect()->route('commandes.showListeCommande')->with('success', 'Commande créée avec succès.');
@@ -481,6 +484,7 @@ public function updateCommande(Request $request){
         'dateDebut' => ['required', 'date', 'after_or_equal:today'],
         'dateFin' => ['required', 'date', 'after_or_equal:dateDebut'],
         'paiement' => 'required',
+        'prix' => 'required',
         // 'modePaiement' => 'nullable|required'
         // Ajouter d'autres règles de validation si nécessaire
     ]);
@@ -554,6 +558,7 @@ public function updateCommande(Request $request){
             'progression' => $pourcentage,
             'status' => $status,
             'etat' => $etat,
+            'prix' => $request->input('prix'),
 
         ], ['merge' => true]); // Le paramètre 'merge' permet de ne mettre à jour que les champs passés dans l'appel
 
@@ -750,8 +755,202 @@ public function updateCommande(Request $request){
     public function showIndex(){
         $atelierId = session('user.atelierId');
         $commandes = $this->getAllCommandesByAtelier($atelierId);
-        return view('index', compact('commandes'));
+        $countCommande = 0;
+        $countRetard = $this->countCommandesByStatus('En retard');
+        $countEnCours = $this->countCommandesByStatus('En cours');
+        $countAttente = $this->countCommandesByStatus('En atente');
+        // $listeCommandesRetard=$this->countCommandesEnAttente();
+        $resultats = $this->CommandesPrix();
+        $nombreCommandesMois = $resultats['nombreCommandes'];
+        $sommeMois=$resultats['totalPrix'];
+        foreach ($commandes as $value) {
+            $countCommande = $countCommande + 1;
+        }
+        return view('index', compact('countCommande','countRetard','countEnCours','countAttente','sommeMois','nombreCommandesMois'));
     }
+
+   // Fonction pour obtenir le nombre total de documents dans une collection
+   public function getTotalDocumentsInCollection($collectionName, $atelierId)
+   {
+       try {
+           $collectionReference = $this->firestore->database()->collection($collectionName);
+           $query = $collectionReference->where('atelierId', '=', $atelierId);
+            $documents = $query->documents();
+
+            $count = 0;
+           foreach ($documents as  $value) {
+                $count = $count + 1;
+           }
+           return $count; // Retourne le nombre total de documents dans la collection
+       } catch (\Exception $e) {
+           // Gérer les erreurs si nécessaire
+           return 'Erreur lors de la récupération des documents : ' . $e->getMessage();
+       }
+   }
+
+   public function countCommandesByStatus($etat)
+   {
+       try {
+            $atelierId = session('user.atelierId');
+           // Récupérer les documents de la collection 'commandes' où le champ 'etat' correspond au paramètre fourni
+           $query = $this->firestore->database()->collection('commandes')
+                                    ->where('atelierId', '=', $atelierId)
+                                   ->where('etat', '=', $etat)
+                                   ->documents();
+
+           $commandesCount = 0;
+
+           // Parcourir les documents et récupérer les données
+           foreach ($query as $document) {
+               $countCommande = $commandesCount + 1;
+           }
+
+           return $commandesCount;
+
+       } catch (\Exception $e) {
+           // Gestion des erreurs en cas de problème lors de la récupération des commandes
+           return redirect()->back()->withErrors(['error' => 'Erreur lors de la récupération des commandes : ' . $e->getMessage()]);
+       }
+   }
+
+   public function countCommandesRetard()
+   {
+       try {
+            $atelierId = session('user.atelierId');
+           // Récupérer les documents de la collection 'commandes' où le champ 'etat' correspond au paramètre fourni
+        //    $queryMauvaise = $this->firestore->database()->collection('commandes');
+           // Créer une variable pour accumuler le nombre de commandes
+            $commandesCount = 0;
+
+        // Filtrer les commandes avec statut 'Mauvaise Progression'
+        $queryMauvaiseProgression = $this->firestore->database()->collection('commandes')
+                                                    ->where('atelierId', '=', $atelierId)
+                                                    ->where('status', '=', 'Mauvaise Progression')
+                                                    ->documents();
+        
+        foreach ($queryMauvaiseProgression as $document) {
+            if ($document->exists()) {
+                $commandesCount++;
+            }
+        }
+
+        // Filtrer les commandes avec statut 'Critique'
+        $queryCritique = $this->firestore->database()->collection('commandes')
+                                            ->where('atelierId', '=', $atelierId)
+                                            ->where('status', '=', 'Critique')
+                                            ->documents();
+
+        foreach ($queryCritique as $document) {
+            if ($document->exists()) {
+                $commandesCount++;
+            }
+        }                                    
+
+           return $commandesCount;
+
+       } catch (\Exception $e) {
+           // Gestion des erreurs en cas de problème lors de la récupération des commandes
+           return redirect()->back()->withErrors(['error' => 'Erreur lors de la récupération des commandes : ' . $e->getMessage()]);
+       }
+   }
+
+   public function CommandesPrix()
+   {
+       try {
+           $prix = 0;
+           $nombreCommandes = 0;
+           $atelierId = session('user.atelierId');
+           
+           // Obtenir la date actuelle
+           $now = Carbon::now();
+           
+           // Calculer les dates de début et de fin du mois en cours
+           $startDate = $now->startOfMonth()->format('Y-m-d');
+           $endDate = $now->endOfMonth()->format('Y-m-d');
+           $endDate = Carbon::createFromFormat('Y-m-d', $endDate);
+            $startDate = Carbon::createFromFormat('Y-m-d', $startDate);
+
+           // Récupérer les commandes
+           $query = $this->firestore->database()->collection('commandes')
+               ->where('atelierId', '=', $atelierId)
+               ->documents();
+
+           foreach ($query as $document) {
+               $data = $document->data();
+            //    dd(isset($data['dateDebut']) and isset($data['dateFin']));
+               
+               // Si le champ 'date' existe et qu'il est bien formaté
+               if (isset($data['dateDebut']) and isset($data['dateFin'])) {
+                
+                   // Convertir la chaîne de caractères en date Carbon
+                   $dateDebut = Carbon::createFromFormat('Y-m-d', $data['dateDebut']);
+                   $dateFin = Carbon::createFromFormat('Y-m-d', $data['dateFin']);
+                   
+                //    dd($endDate >= $dateFin);
+                    // dd($dateDebut >= $startDate && $dateFin <= $endDate);
+                   // Vérifier si la date de commande est dans le mois en cours
+                   if ($dateDebut >= $startDate && $dateFin <= $endDate) {
+                       // Ajouter le prix à la somme totale
+                       if (isset($data['prix'])) {
+                           $prix = $prix +  intval($data['prix']);
+                       }
+                       
+                       $nombreCommandes=$nombreCommandes+1;
+                   }
+               }
+           }
+
+        //    dd('ok');
+           // Retourner le prix total et le nombre de commandes
+           return [
+               'totalPrix' => $prix,
+               'nombreCommandes' => $nombreCommandes
+           ];
+
+       } catch (\Exception $e) {
+           // Gestion des erreurs en cas de problème lors de la récupération des commandes
+           dd($e->getMessage());
+           return redirect()->back()->withErrors(['error' => 'Erreur lors de la récupération des commandes : ' . $e->getMessage()]);
+       }
+   }
+   public function listeCommandesRetard()
+   {    try{ 
+
+            $prix=0;
+            $atelierId = session('user.atelierId');
+            // Récupérer les documents de la collection 'commandes' où le champ 'etat' correspond au paramètre fourni
+            // $queryMauvaise = $this->firestore->database()->collection('commandes');
+            // Créer une variable
+            $queryMauvaiseProgression = $this->firestore->database()->collection('commandes')
+            ->where('atelierId', '=', $atelierId)
+            ->where('status', '=', 'Mauvaise Progression')
+            ->documents();
+
+            foreach ($queryMauvaiseProgression as $document) {
+            if ($document->exists()) {
+                $prix=$prix+$document['prix'];
+            }
+            }
+
+            // Filtrer les commandes avec statut 'Critique'
+            $queryCritique = $this->firestore->database()->collection('commandes')
+            ->where('atelierId', '=', $atelierId)
+            ->where('status', '=', 'Critique')
+            ->documents();
+
+            foreach ($queryCritique as $document) {
+            if ($document->exists()) {
+                $prix=$prix+$document['prix'];
+            }
+            }                                    
+
+            return $prix;
+
+       } catch (\Exception $e) {
+           // Gestion des erreurs en cas de problème lors de la récupération des commandes
+           return redirect()->back()->withErrors(['error' => 'Erreur lors de la récupération des commandes : ' . $e->getMessage()]);
+       }
+   }
 
 }
 
