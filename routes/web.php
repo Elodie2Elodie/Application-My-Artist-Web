@@ -68,6 +68,8 @@ Route::controller(CommandeController::class)->prefix('commandes')->name('command
     Route::get('/calendrier/date/{date}', 'getCommandesByDate')->name('getCommandesByDate');
     Route::get('/index', 'showIndex')->name('showIndex');
     Route::get('/calendrier', 'calendrierIndex')->name('calendrierIndex');
+    Route::get('/pieChart', 'pieChartCommande')->name('pieChart');
+    Route::get('/barChart', 'barChartCommande')->name('barChart');
 
 });
 

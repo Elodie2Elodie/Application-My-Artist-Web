@@ -1,213 +1,210 @@
-(function ($) {
-  'use strict';
-  if ($("#visit-sale-chart").length) {
-    const ctx = document.getElementById('visit-sale-chart');
+// Assurez-vous d'inclure jQuery ou utilisez Fetch API
 
-    var graphGradient1 = document.getElementById('visit-sale-chart').getContext("2d");
-    var graphGradient2 = document.getElementById('visit-sale-chart').getContext("2d");
-    var graphGradient3 = document.getElementById('visit-sale-chart').getContext("2d");
+$(document).ready(function() {
+  $.ajax({
+    url: 'http://127.0.0.1:8000/commandes/pieChart',
+    method: 'GET',
+    success: function(response) {
+      // Manipulez les données pour mettre à jour votre graphique
+      const data = response; // Adaptez cette partie selon votre structure de données
 
-    var gradientStrokeViolet = graphGradient1.createLinearGradient(0, 0, 0, 181);
-    gradientStrokeViolet.addColorStop(0, 'rgba(218, 140, 255, 1)');
-    gradientStrokeViolet.addColorStop(1, 'rgba(154, 85, 255, 1)');
-    var gradientLegendViolet = 'linear-gradient(to right, rgba(218, 140, 255, 1), rgba(154, 85, 255, 1))';
+      updateChart(data);
+    },
+    error: function(xhr) {
+      console.error('Erreur lors de la récupération des données :', xhr.responseText);
+    }
+  });
 
-    var gradientStrokeBlue = graphGradient2.createLinearGradient(0, 0, 0, 360);
-    gradientStrokeBlue.addColorStop(0, 'rgba(54, 215, 232, 1)');
-    gradientStrokeBlue.addColorStop(1, 'rgba(177, 148, 250, 1)');
-    var gradientLegendBlue = 'linear-gradient(to right, rgba(54, 215, 232, 1), rgba(177, 148, 250, 1))';
+  function updateChart(data) {
+    // Préparez les données pour le graphique
+    // Vérifiez si data est un objet
+    if (typeof data !== 'object' || data === null) {
+      console.error('Les données reçues ne sont pas un objet:', data);
+      return;
+    }
 
-    var gradientStrokeRed = graphGradient3.createLinearGradient(0, 0, 0, 300);
-    gradientStrokeRed.addColorStop(0, 'rgba(255, 191, 150, 1)');
-    gradientStrokeRed.addColorStop(1, 'rgba(254, 112, 150, 1)');
-    var gradientLegendRed = 'linear-gradient(to right, rgba(255, 191, 150, 1), rgba(254, 112, 150, 1))';
-    const bgColor1 = ["rgba(218, 140, 255, 1)"];
-    const bgColor2 = ["rgba(54, 215, 232, 1"];
-    const bgColor3 = ["rgba(255, 191, 150, 1)"];
+  // Extraire les labels et les valeurs des données reçues
+    const labels = Object.keys(data);
+    const values = [1,1,1];
+    // const values = Object.values(data);
+    
 
-    new Chart(ctx, {
-      type: 'bar',
-      data: {
-        labels: ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG'],
-        datasets: [{
-          label: "CHN",
-          borderColor: gradientStrokeViolet,
-          backgroundColor: gradientStrokeViolet,
-          fillColor: bgColor1,
-          hoverBackgroundColor: gradientStrokeViolet,
-          pointRadius: 0,
-          fill: false,
-          borderWidth: 1,
-          fill: 'origin',
-          data: [20, 40, 15, 35, 25, 50, 30, 20],
-          barPercentage: 0.5,
-          categoryPercentage: 0.5,
-        },
-        {
-          label: "USA",
-          borderColor: gradientStrokeRed,
-          backgroundColor: gradientStrokeRed,
-          hoverBackgroundColor: gradientStrokeRed,
-          fillColor: bgColor2,
-          pointRadius: 0,
-          fill: false,
-          borderWidth: 1,
-          fill: 'origin',
-          data: [40, 30, 20, 10, 50, 15, 35, 40],
-          barPercentage: 0.5,
-          categoryPercentage: 0.5,
-        },
-        {
-          label: "UK",
-          borderColor: gradientStrokeBlue,
-          backgroundColor: gradientStrokeBlue,
-          hoverBackgroundColor: gradientStrokeBlue,
-          fillColor: bgColor3,
-          pointRadius: 0,
-          fill: false,
-          borderWidth: 1,
-          fill: 'origin',
-          data: [70, 10, 30, 40, 25, 50, 15, 30],
-          barPercentage: 0.5,
-          categoryPercentage: 0.5,
-        }
-        ]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: true,
-        elements: {
-          line: {
-            tension: 0.4,
-          },
-        },
-        scales: {
-          y: {
-            display: false,
-            grid: {
-              display: true,
-              drawOnChartArea: true,
-              drawTicks: false,
-            },
-          },
-          x: {
-            display: true,
-            grid: {
-              display: false,
-            },
-          }
-        },
-        plugins: {
-          legend: {
-            display: false,
-          }
-        }
-      },
-      plugins: [{
-        afterDatasetUpdate: function (chart, args, options) {
-          const chartId = chart.canvas.id;
-          var i;
-          const legendId = `${chartId}-legend`;
-          const ul = document.createElement('ul');
-          for (i = 0; i < chart.data.datasets.length; i++) {
-            ul.innerHTML += `
-              <li>
-                <span style="background-color: ${chart.data.datasets[i].fillColor}"></span>
-                ${chart.data.datasets[i].label}
-              </li>
-            `;
-          }
-          // alert(chart.data.datasets[0].backgroundColor);
-          return document.getElementById(legendId).appendChild(ul);
-        }
-      }]
-    });
-  }
-
-  if ($("#traffic-chart").length) {
-    const ctx = document.getElementById('traffic-chart');
-
-    var graphGradient1 = document.getElementById("traffic-chart").getContext('2d');
-    var graphGradient2 = document.getElementById("traffic-chart").getContext('2d');
-    var graphGradient3 = document.getElementById("traffic-chart").getContext('2d');
-
-    var gradientStrokeBlue = graphGradient1.createLinearGradient(0, 0, 0, 181);
-    gradientStrokeBlue.addColorStop(0, 'rgba(54, 215, 232, 1)');
-    gradientStrokeBlue.addColorStop(1, 'rgba(177, 148, 250, 1)');
-    var gradientLegendBlue = 'rgba(54, 215, 232, 1)';
-
-    var gradientStrokeRed = graphGradient2.createLinearGradient(0, 0, 0, 50);
-    gradientStrokeRed.addColorStop(0, 'rgba(255, 191, 150, 1)');
-    gradientStrokeRed.addColorStop(1, 'rgba(254, 112, 150, 1)');
-    var gradientLegendRed = 'rgba(254, 112, 150, 1)';
-
-    var gradientStrokeGreen = graphGradient3.createLinearGradient(0, 0, 0, 300);
-    gradientStrokeGreen.addColorStop(0, 'rgba(6, 185, 157, 1)');
-    gradientStrokeGreen.addColorStop(1, 'rgba(132, 217, 210, 1)');
-    var gradientLegendGreen = 'rgba(6, 185, 157, 1)';
-
-    // const bgColor1 = ["rgba(54, 215, 232, 1)"];
-    // const bgColor2 = ["rgba(255, 191, 150, 1"];
-    // const bgColor3 = ["rgba(6, 185, 157, 1)"];
-
-    new Chart(ctx, {
+    new Chart(document.getElementById('traffic-chart'), {
       type: 'doughnut',
       data: {
-        labels: ['Search Engines 30%', 'Direct Click 30%', 'Bookmarks Click 40%'],
+        labels: labels,
         datasets: [{
-          data: [30, 30, 40],
-          backgroundColor: [gradientStrokeBlue, gradientStrokeGreen, gradientStrokeRed],
-          hoverBackgroundColor: [
-            gradientStrokeBlue,
-            gradientStrokeGreen,
-            gradientStrokeRed
-          ],
-          borderColor: [
-            gradientStrokeBlue,
-            gradientStrokeGreen,
-            gradientStrokeRed
-          ],
-          legendColor: [
-            gradientLegendBlue,
-            gradientLegendGreen,
-            gradientLegendRed
-          ]
+          data: values,
+          backgroundColor: ['rgba(54, 215, 232, 1)', 'rgba(255, 191, 150, 1)', 'rgba(6, 185, 157, 1)'],
+          hoverBackgroundColor: ['rgba(54, 215, 232, 0.7)', 'rgba(255, 191, 150, 0.7)', 'rgba(6, 185, 157, 0.7)']
         }]
       },
       options: {
         cutout: 50,
-        animationEasing: "easeOutBounce",
-        animateRotate: true,
-        animateScale: false,
         responsive: true,
         maintainAspectRatio: true,
-        showScale: true,
-        legend: false,
         plugins: {
           legend: {
-            display: false,
+            display: true
           }
         }
       },
       plugins: [{
-        afterDatasetUpdate: function (chart, args, options) {
-          const chartId = chart.canvas.id;
-          var i;
-          const legendId = `${chartId}-legend`;
-          const ul = document.createElement('ul');
-          for (i = 0; i < chart.data.datasets[0].data.length; i++) {
-            ul.innerHTML += `
-                <li>
-                  <span style="background-color: ${chart.data.datasets[0].legendColor[i]}"></span>
-                  ${chart.data.labels[i]}
-                </li>
-              `;
-          }
-          return document.getElementById(legendId).appendChild(ul);
+        id: 'customLegend',
+        afterDatasetUpdate: function (chart) {
+            const legendId = `${chart.canvas.id}-legend`;
+            const ul = document.createElement('ul');
+            const { labels } = chart.data;
+
+            // Vérifiez que les labels existent avant d'y accéder
+            if (labels && labels.length > 0) {
+                for (let i = 0; i < labels.length; i++) {
+                    ul.innerHTML += `
+                        <li>
+                          <span style="background-color: ${chart.data.datasets[0].backgroundColor[i]}"></span>
+                          ${labels[i]}
+                        </li>
+                    `;
+                }
+            }
+
+            document.getElementById(legendId).innerHTML = ''; // Clear previous legend
+            document.getElementById(legendId).appendChild(ul);
         }
-      }]
+    }]
     });
   }
+});
+
+
+$(document).ready(function() {
+  // Fonction pour obtenir la couleur de dégradé en fonction du label
+  function getGradientColor(label) {
+      switch (label) {
+          case 'Retard':
+              return 'rgba(218, 140, 255, 1)';
+          case 'Attente':
+              return 'rgba(54, 215, 232, 1)';
+          case 'Cours':
+              return 'rgba(255, 191, 150, 1)';
+          default:
+              return 'rgba(0, 0, 0, 0.1)';
+      }
+  }
+
+  // Fonction pour mettre à jour le graphique
+  function updateChart(data) {
+      // Vérifiez si data est un tableau d'objets
+      if (!Array.isArray(data) || data.length === 0) {
+          console.error('Les données reçues ne sont pas un tableau valide:', data);
+          return;
+      }
+
+      // Extraire les mois (les clés des objets de chaque mois)
+      const months = ['JAN', 'FEB', 'MAR', 'AVR', 'MAI', 'JUIN', 'JUIL', 'AUO'];
+
+      // Extraire les labels à partir des clés des objets de données
+      const labels = Object.keys(data[0]);
+
+      // Initialiser les données pour chaque série
+      const seriesData = labels.map(label => {
+          return {
+              label: label,
+              borderColor: getGradientColor(label),
+              backgroundColor: getGradientColor(label),
+              hoverBackgroundColor: getGradientColor(label),
+              pointRadius: 0,
+              fill: false,
+              borderWidth: 1,
+              data: data.map(monthData => monthData[label]),
+              barPercentage: 0.5,
+              categoryPercentage: 0.5
+          };
+      });
+
+      const ctx = document.getElementById('visit-sale-chart').getContext('2d');
+
+      new Chart(ctx, {
+          type: 'bar',
+          data: {
+              labels: months,
+              datasets: seriesData
+          },
+          options: {
+              responsive: true,
+              maintainAspectRatio: true,
+              elements: {
+                  line: {
+                      tension: 0.4,
+                  },
+              },
+              scales: {
+                  y: {
+                      display: true,
+                      grid: {
+                          display: true,
+                          drawOnChartArea: true,
+                          drawTicks: false,
+                      },
+                  },
+                  x: {
+                      display: true,
+                      grid: {
+                          display: false,
+                      },
+                  }
+              },
+              plugins: {
+                  legend: {
+                      display: false,
+                  }
+              }
+          },
+          plugins: [{
+              id: 'customLegend',
+              afterDatasetUpdate: function (chart, args, options) {
+                  const chartId = chart.canvas.id;
+                  const legendId = `${chartId}-legend`;
+                  const ul = document.createElement('ul');
+                  chart.data.datasets.forEach((dataset) => {
+                      ul.innerHTML += `
+                          <li>
+                            <span style="background-color: ${dataset.backgroundColor}"></span>
+                            ${dataset.label}
+                          </li>
+                      `;
+                  });
+                  document.getElementById(legendId).innerHTML = ''; // Nettoyer l'ancienne légende
+                  document.getElementById(legendId).appendChild(ul);
+              }
+          }]
+      });
+  }
+
+  // Fonction pour récupérer les données de l'API
+  function fetchChartData() {
+      $.ajax({
+          url: 'http://127.0.0.1:8000/commandes/barChart',  // Remplacez par l'URL réelle de votre API
+          type: 'GET',
+          dataType: 'json',
+          success: function (data) {
+              updateChart(data);
+          },
+          error: function (xhr, status, error) {
+              console.error('Erreur lors de la récupération des données :', status, error);
+          }
+      });
+  }
+
+  // Appeler la fonction pour récupérer les données et mettre à jour le graphique
+  fetchChartData();
+})
+
+
+(function ($) {
+  'use strict';
+ 
+
 
 
 

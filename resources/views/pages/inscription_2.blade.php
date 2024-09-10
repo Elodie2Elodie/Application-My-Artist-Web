@@ -104,10 +104,16 @@
     
 
     <!-- Section pour l'inscription de l'administrateur -->
-    <form action="{{ route('auth.register') }}" method="POST" style="display: flex;">
-        <div class="container" style="margin-right: 5%; height:400px; margin-top: 10%;">
+    <form action="{{ route('auth.register') }}" method="POST" style="display: flex;" enctype="multipart/form-data">
+        <div class="container" style="margin-right: 5%; height:440px; margin-top: 10%;">
                 <h2>Inscription - Information de l'atelier</h2>
                 
+                <!-- Nom -->
+                <div class="input-container" style="display: flex; margin-left:16%; margin-bottom:4%;">
+                    <i class="mdi mdi-account" style="font-size: 24px; margin-top:2%;"></i>
+                    <input type="file" id="fileInput" name="profile_photo" class="custom-input-2">
+                </div>
+
                 <!-- Nom -->
                 <div class="input-container" style="display: flex; margin-left:16%; margin-bottom:4%;">
                     <i class="mdi mdi-account" style="font-size: 24px; margin-top:2%;"></i>

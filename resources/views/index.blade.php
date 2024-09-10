@@ -45,7 +45,7 @@
                     <img src="{{ asset('assets/images/dashboard/circle.svg') }}" class="card-img-absolute" alt="circle-image" />
                     <h4 class="font-weight-normal mb-3">Commandes <i class="mdi mdi-package mdi-24px float-end"></i>
                     </h4>
-                    <h2 class="mb-5">{{ $countRetard}}</h2>
+                    <h2 class="mb-5">{{ $countRetard }}</h2>
                     <h6 class="card-text">En retards</h6>
                   </div>
                 </div>
@@ -56,7 +56,7 @@
                 <div class="card">
                   <div class="card-body">
                     <div class="clearfix">
-                      <h4 class="card-title float-start">Statistiques des ventes</h4>
+                      <h4 class="card-title float-start">Statistiques</h4>
                       <div id="visit-sale-chart-legend" class="rounded-legend legend-horizontal legend-top-right float-end"></div>
                     </div>
                     <canvas id="visit-sale-chart" class="mt-4"></canvas>
@@ -79,31 +79,34 @@
               <div class="col-12 grid-margin">
                 <div class="card">
                   <div class="card-body">
-                    <h4 class="card-title">Couturiers </h4>
+                    <h4 class="card-title">Ventes Boutique </h4>
                     <div class="table-responsive">
                       <table class="table">
                         <thead>
                           <tr>
-                            <th> Nom</th>
-                            <th> Commandes</th>
-                            <th> Retard</th>
-                            <th> Taches </th>
-                            <th> Messages en attente </th>
+                            <th></th>
+                            <th> Client</th>
+                            <th> Tenue</th>
+                            <th> Fait le</th>
+                            <th> Prix </th>
+                            <th> Etat </th>
                           </tr>
                         </thead>
                         <tbody>
+                          @foreach ($ventes as $vente)
                           <tr>
                             <td>
                               <img src="{{ asset('assets/images/faces/profil-1.jpg') }}" class="me-2" alt="image"> Modou Diouf
                             </td>
-                            <td> 4 </td>
+                            <td> {{ $vente['nomClient'] }} </td>
                             <td>
-                              <label class="badge badge-gradient-success">Bonne progression</label>
+                              {{ $vente['nomTenue'] }}
                             </td>
-                            <td> 0 </td>
-                            <td> 22 </td>
+                            <td> {{ $vente['date'] }} </td>
+                            <td> {{ $vente['prix'] }} </td>
+                            <td> {{ $vente['etat'] }} </td>
                           </tr>
-                          
+                          @endforeach
                         </tbody>
                       </table>
                     </div>
@@ -177,5 +180,16 @@
     @push('scripts')
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="{{ asset('assets/js/myjscalendrier.js') }}"></script>
+    <!-- Firebase App (required) -->
+<script src="https://www.gstatic.com/firebasejs/9.14.0/firebase-app.js"></script>
+
+<!-- Firebase Firestore (si vous utilisez Firestore) -->
+<script src="https://www.gstatic.com/firebasejs/9.14.0/firebase-firestore.js"></script>
+
+<!-- Firebase Authentication (si vous utilisez l'authentification) -->
+<script src="https://www.gstatic.com/firebasejs/9.14.0/firebase-auth.js"></script>
+
+<!-- Firebase Storage (si vous utilisez le stockage) -->
+<script src="https://www.gstatic.com/firebasejs/9.14.0/firebase-storage.js"></script>
     @endpush
 @endsection

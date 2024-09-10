@@ -274,6 +274,7 @@ class AuthController extends Controller
             'phoneNumber' => $phoneNumber,
             // 'disabled' => false, // Le compte est activé par défaut
         ];
+
         // dd($user = $this->auth->createUser($userProperties));
         $atelierId=$this->storeAtelier($request);
         try {

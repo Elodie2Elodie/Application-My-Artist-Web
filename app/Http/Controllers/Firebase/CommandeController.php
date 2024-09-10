@@ -756,17 +756,18 @@ public function updateCommande(Request $request){
         $atelierId = session('user.atelierId');
         $commandes = $this->getAllCommandesByAtelier($atelierId);
         $countCommande = 0;
-        $countRetard = $this->countCommandesByStatus('En retard');
+        $countRetard = $this->countCommandesRetard();
         $countEnCours = $this->countCommandesByStatus('En cours');
         $countAttente = $this->countCommandesByStatus('En atente');
         // $listeCommandesRetard=$this->countCommandesEnAttente();
         $resultats = $this->CommandesPrix();
         $nombreCommandesMois = $resultats['nombreCommandes'];
         $sommeMois=$resultats['totalPrix'];
+        $ventes= $this->getVentes();
         foreach ($commandes as $value) {
             $countCommande = $countCommande + 1;
         }
-        return view('index', compact('countCommande','countRetard','countEnCours','countAttente','sommeMois','nombreCommandesMois'));
+        return view('index', compact('countCommande','countRetard','countEnCours','countAttente','sommeMois','nombreCommandesMois','ventes'));
     }
 
    // Fonction pour obtenir le nombre total de documents dans une collection
@@ -813,6 +814,7 @@ public function updateCommande(Request $request){
        }
    }
 
+
    public function countCommandesRetard()
    {
        try {
@@ -853,6 +855,117 @@ public function updateCommande(Request $request){
            return redirect()->back()->withErrors(['error' => 'Erreur lors de la récupération des commandes : ' . $e->getMessage()]);
        }
    }
+
+   public function pieChartCommande(){
+
+    try {
+        $Retard = $this->countCommandesRetard();
+        $Attente = $this->countCommandesByStatus('En retard');
+        $Cours = $this->countCommandesByStatus('En cours');
+
+        // Créer un tableau associatif avec les informations pour le pie chart
+        $infoPieChart=[];
+        $infoPieChart = [
+            'Retard' => $Retard,
+            'Attente' => $Attente,
+            'Cours' => $Cours
+        ];
+
+        
+        // dd('ok');
+        return $infoPieChart;
+    }catch(Exception $e){
+        // dd($e);
+        return ['error' => 'Erreur lors de la récupération des commande'];
+    }
+   }
+
+   public function getDonneePourBarChar($mois){
+        try {
+            $atelierId = session('user.atelierId');
+
+            // Obtenir l'année actuelle
+            $year = Carbon::now()->year;
+
+            // Calculer les dates de début et de fin pour le mois donné
+            $startDate = Carbon::create($year, $mois, 1)->startOfMonth()->format('Y-m-d');
+            $endDate = Carbon::create($year, $mois, 1)->endOfMonth()->format('Y-m-d');
+            
+            $startDate = Carbon::createFromFormat('Y-m-d', $startDate);
+            $endDate = Carbon::createFromFormat('Y-m-d', $endDate);
+
+            // Récupérer les commandes
+            $query = $this->firestore->database()->collection('commandes')
+                ->where('atelierId', '=', $atelierId)
+                ->documents();
+
+            $countAnnuler = 0;
+            $countTerminer = 0;
+            $countRefuser = 0;
+
+            foreach ($query as $document) {
+                $data = $document->data();
+
+                // Vérifier si les champs 'dateDebut' et 'dateFin' existent
+                if (isset($data['dateDebut']) && isset($data['dateFin'])) {
+                    // Convertir les chaînes de caractères en dates Carbon
+                    $dateDebut = Carbon::createFromFormat('Y-m-d', $data['dateDebut']);
+                    $dateFin = Carbon::createFromFormat('Y-m-d', $data['dateFin']);
+
+                    // Vérifier si la date de commande est dans le mois donné
+                    if ($dateDebut >= $startDate && $dateFin <= $endDate) {
+                        // Compter les états des commandes
+                        if (isset($data['etat'])) {
+                            if ($data['etat'] == 'annuler') {
+                                $countAnnuler++;
+                            } elseif ($data['etat'] == 'terminer') {
+                                $countTerminer++;
+                            } elseif ($data['etat'] == 'refuser') {
+                                $countRefuser++;
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Préparer les données pour le graphique
+            $infoBarChart = [
+                'Annuler' => $countAnnuler,
+                'Terminer' => $countTerminer,
+                'Refuser' => $countRefuser
+            ];
+
+            return $infoBarChart;
+
+        } catch (\Exception $e) {
+            // Gestion des erreurs en cas de problème lors de la récupération des commandes
+            return redirect()->back()->withErrors(['error' => 'Erreur lors de la récupération des commandes : ' . $e->getMessage()]);
+        }
+    }
+
+    public function barChartCommande() {
+        try {
+            // Définir les mois à récupérer (de janvier à août)
+            $moisArray = [1,2,3,4,5,6,7];
+    
+            // Tableau pour stocker les données pour chaque mois
+            $dataBarChart = [];
+    
+            // Itérer sur chaque mois pour récupérer les données
+            foreach ($moisArray as $mois) {
+                $dataBarChart[] = $this->getDonneePourBarChar($mois);
+            }
+    
+            // Retourner les données du bar chart et du pie chart
+            // dd($dataBarChart);
+            return $dataBarChart;
+    
+        } catch (Exception $e) {
+            dd($e);
+            return ['error' => 'Erreur lors de la récupération des commandes : ' . $e->getMessage()];
+        }
+    }
+    
 
    public function CommandesPrix()
    {
@@ -951,6 +1064,24 @@ public function updateCommande(Request $request){
            return redirect()->back()->withErrors(['error' => 'Erreur lors de la récupération des commandes : ' . $e->getMessage()]);
        }
    }
+
+   public function getVentes()
+   {
+       try {
+            $atelierId = session('user.atelierId');
+           // Récupérer les documents de la collection 'commandes' où le champ 'etat' correspond au paramètre fourni
+           $query = $this->firestore->database()->collection('ventes')
+                                    ->where('atelierId', '=', $atelierId)
+                                   ->documents();
+
+           return $query;
+
+       } catch (\Exception $e) {
+           // Gestion des erreurs en cas de problème lors de la récupération des commandes
+           return redirect()->back()->withErrors(['error' => 'Erreur lors de la récupération des commandes : ' . $e->getMessage()]);
+       }
+   }
+
 
 }
 
