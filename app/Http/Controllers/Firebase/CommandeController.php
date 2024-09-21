@@ -14,12 +14,18 @@ class CommandeController extends Controller
 {
     protected $firestore;
     protected $commandes;
+    protected $mensurations;
+    protected $panierCollection;
+
 
     public function __construct()
     {
         $factory = (new Factory)->withServiceAccount(base_path(env('FIREBASE_CREDENTIALS')));
         $this->firestore = $factory->createFirestore();
         $this->commandes = $this->firestore->database()->collection('commandes');
+        $this->mensurations = $this->firestore->database()->collection('mensurations');
+        $this->panierCollection = $this->firestore->database()->collection('paniers');
+
     }
 
     public function showFornulaireCommande(){
@@ -61,15 +67,15 @@ class CommandeController extends Controller
     public function getUserById($userId)
     {
         try {
-            // Accéder à la collection 'user_addresses' et récupérer le document par l'ID de l'utilisateur
-            $document = $this->firestore->database()->collection('user_addresses')->document($userId)->snapshot();
-            
-            // Vérifier si le document existe
-            if ($document->exists()) {
-                // dd($document->data());
-                // Renvoyer les données de l'utilisateur
-                return $document->data();
-                
+            // Accéder à la collection 'user_addresses' et récupérer les documents par l'ID de l'utilisateur
+            $documents = $this->firestore->database()->collection('user_addresses')->where('uid', '=', $userId)->documents();
+    
+            // Vérifier si des documents existent
+            if (! $documents->isEmpty()) {
+                foreach ($documents as $document) {
+                    // Renvoyer les données du premier document correspondant
+                    return $document->data();
+                }
             } else {
                 return null;
             }
@@ -78,6 +84,7 @@ class CommandeController extends Controller
             return response()->json(['error' => 'Une erreur est survenue: ' . $e->getMessage()], 500);
         }
     }
+    
 
     // Créer une nouvelle commande
     public function createCommande(Request $request)
@@ -147,7 +154,7 @@ class CommandeController extends Controller
             $taches = $request->input('taches', []);
             $pourcentage = $this->trouveProgression($taches);
             $status =  $this->updateEtatProgression($request->dateDebut, $request->dateFin, $pourcentage);
-            $etat =  $this->etat($request->dateDebut, $request->dateFin, $pourcentage);
+            // $etat =  $this->et($request->dateDebut, $request->dateFin, $pourcentage);
 
             $commandeRef->set([
                 'photoCommande' => $photoCommandeUrl,
@@ -160,7 +167,6 @@ class CommandeController extends Controller
                 'nomClient' => $client['nom'],
                 'dateDebut' => $request->input('dateDebut'),
                 'dateFin' => $request->input('dateFin'),
-                'etat' => $etat,
                 'progression' => $pourcentage, // Enregistrement de la progression
                 'etatProgression' => '0', // Enregistrement de l'état de progression
                 'status' => $status,
@@ -170,6 +176,8 @@ class CommandeController extends Controller
                 'taches' => $taches,
                 'prix' => $request->input('prix'),
             ]);
+
+            dd('ok');
 
             return redirect()->route('commandes.showListeCommande')->with('success', 'Commande créée avec succès.');
         } catch (Exception $e) {
@@ -434,6 +442,8 @@ class CommandeController extends Controller
             // Parcourir les documents récupérés
             foreach ($commandesQuery as $commandeDoc) {
                 if ($commandeDoc->exists()) {
+                   
+                    // $commandeDoc->data()['tachesTab'] = json_decode($commandeDoc->data()['taches'], true);
                     $commandes[] = $commandeDoc->data(); // Récupérer les données de chaque commande
                 }
             }
@@ -441,6 +451,7 @@ class CommandeController extends Controller
             // Retourner la liste des commandes
             return $commandes;
         } catch (Exception $e) {
+            dd($e);
             return null;
         }
     }
@@ -475,22 +486,24 @@ class CommandeController extends Controller
         return view('pages.modifier_commande', compact('commande','couturiers','clients'));
     }
 
+    
+
     // Mettre à jour une commande existante
 public function updateCommande(Request $request){ 
     
     // Valider les nouvelles données de la commande
     $request->validate([
-        'couturierId' => 'required|string',
-        'dateDebut' => ['required', 'date', 'after_or_equal:today'],
-        'dateFin' => ['required', 'date', 'after_or_equal:dateDebut'],
-        'paiement' => 'required',
-        'prix' => 'required',
+        // 'couturierId' => 'required|string',
+        // 'dateDebut' => ['required', 'date', 'after_or_equal:today'],
+        // 'dateFin' => ['required', 'date', 'after_or_equal:dateDebut'],
+        // 'paiement' => 'required',
+        // 'prix' => 'required',
         // 'modePaiement' => 'nullable|required'
         // Ajouter d'autres règles de validation si nécessaire
     ]);
 
+    
     $commandeId = $request->commandeId;
-
     try {
         // Récupérer la commande à mettre à jour depuis Firestore
         $commandeRef = $this->commandes->document($commandeId);
@@ -543,11 +556,11 @@ public function updateCommande(Request $request){
         $taches = $request->input('taches', []);
         $pourcentage =  $this->trouveProgression($taches);
         $status =  $this->updateEtatProgression($request->dateDebut, $request->dateFin, $pourcentage);
-        $etat =  $this->etat($request->dateDebut, $request->dateFin, $pourcentage);
+        $etat =  $this->updateEtat($request->dateDebut, $request->dateFin, $pourcentage);
 
         // Mise à jour de la commande avec les nouvelles données
         $commandeRef->set([
-            'photoCommande' => $photoCommandeUrl,
+            // 'photoCommande' => $photoCommandeUrl,
             'couturierId' => $request->input('couturierId'),
             'nomCouturier' => $couturier['nom'],
             'dateDebut' => $request->input('dateDebut'),
@@ -555,17 +568,42 @@ public function updateCommande(Request $request){
             'taches' => $taches,
             'modePaiement' =>  $request->input('modePaiement'),
             'paiement' =>  $request->input('paiement'),
-            'progression' => $pourcentage,
+            'progression' => $status,
             'status' => $status,
             'etat' => $etat,
             'prix' => $request->input('prix'),
 
         ], ['merge' => true]); // Le paramètre 'merge' permet de ne mettre à jour que les champs passés dans l'appel
 
-        return redirect()->route('commandes.showListeCommande')->with('success', 'Commande mise à jour avec succès.');
+        return redirect()->route('commandes.showListeCommande')->with('success', 'Commande mise à jour avec succès.',200);
     } catch (Exception $e) {
         return redirect()->back()->withErrors(['error' => 'Erreur lors de la mise à jour de la commande : ' . $e->getMessage()]);
     }
+}
+
+public function getMensurations($clientId){
+
+    try{ 
+     // Effectuer la requête Firestore pour récupérer les commandes avec l'état donné
+     $mensurationsQuery = $this->mensurations;
+     $mensurationsSnapshots = $mensurationsQuery->documents();
+
+     // Initialiser un tableau pour stocker les mensurations récupérées
+     $mensurations = [];
+
+     foreach ($mensurationsSnapshots as $mensuration) {
+         if ($mensuration->exists()) {
+             // Ajouter la mensuration au tableau
+             $mensurations[] = $mensuration->data();
+         }
+     }
+
+     return response()->json($mensurations);
+
+    }catch (Exception $e) {
+        return response()->json(['error' => 'Erreur lors de la récupération des mensurations :' .$e->getMessage()]);
+    }
+
 }
 
 // Récupérer les commandes en fonction de leur état
@@ -680,6 +718,37 @@ public function updateCommande(Request $request){
         return $nouvelEtatPourcentage;
     }
     
+
+    public function getPanier(){
+        try{
+
+            
+            $atelierId = session('user.atelierId');
+            if (!$atelierId) {
+                return response()->json(['error' => 'ID de l\'atelier requis'], 400);
+            }
+
+            // Filtrer les documents en fonction de l'ID de l'atelier et de l'état
+            $query = $this->panierCollection
+                ->where('atelierId', '=', $atelierId)
+                ->where('is_livrer', '=', 'non')
+                ->where('is_valider', '=', 'oui')
+                ->documents();
+
+            $panierList = [];
+            foreach ($query as $panier) {
+                $panierList[] = $panier->data();
+            }
+            // dd($panierList);
+
+            return view('pages/ventes',['ventes' => $panierList]);
+        }catch(Exception $e){
+            return response()->json(['error' => 'Une erreur est survenue lors de la récupération des paniers', 'message' => $e->getMessage()], 500);
+        }
+        
+            
+        }
+        
         public function getCommandesByStatus($etat)
     {
         try {
@@ -740,7 +809,7 @@ public function updateCommande(Request $request){
         }
     
         if ($dateDebut > $dateAujourdhui) {
-            $nouvelEtat = 'Non commencé';
+            $nouvelEtat = 'Accepter';
         } else {
             $nouvelEtat = 'En cours';
         }
@@ -758,7 +827,7 @@ public function updateCommande(Request $request){
         $countCommande = 0;
         $countRetard = $this->countCommandesRetard();
         $countEnCours = $this->countCommandesByStatus('En cours');
-        $countAttente = $this->countCommandesByStatus('En atente');
+        $countAttente = $this->countCommandesByStatus('En attente');
         // $listeCommandesRetard=$this->countCommandesEnAttente();
         $resultats = $this->CommandesPrix();
         $nombreCommandesMois = $resultats['nombreCommandes'];
@@ -792,6 +861,7 @@ public function updateCommande(Request $request){
    public function countCommandesByStatus($etat)
    {
        try {
+            
             $atelierId = session('user.atelierId');
            // Récupérer les documents de la collection 'commandes' où le champ 'etat' correspond au paramètre fourni
            $query = $this->firestore->database()->collection('commandes')
@@ -802,8 +872,8 @@ public function updateCommande(Request $request){
            $commandesCount = 0;
 
            // Parcourir les documents et récupérer les données
-           foreach ($query as $document) {
-               $countCommande = $commandesCount + 1;
+           foreach ($query as $query) {
+                $commandesCount = $commandesCount + 1;
            }
 
            return $commandesCount;
@@ -813,6 +883,32 @@ public function updateCommande(Request $request){
            return redirect()->back()->withErrors(['error' => 'Erreur lors de la récupération des commandes : ' . $e->getMessage()]);
        }
    }
+
+//    public function MettreCommandeEnCours($etat)
+//    {
+//        try {
+            
+//             $atelierId = session('user.atelierId');
+//            // Récupérer les documents de la collection 'commandes' où le champ 'etat' correspond au paramètre fourni
+//            $query = $this->firestore->database()->collection('commandes')
+//                                     ->where('atelierId', '=', $atelierId)
+//                                    ->where('etat', '=', $etat)
+//                                    ->documents();
+
+//            $commandesCount = 0;
+
+//            // Parcourir les documents et récupérer les données
+//            foreach ($query as $query) {
+//                 $commandesCount = $commandesCount + 1;
+//            }
+
+//            return $commandesCount;
+
+//        } catch (\Exception $e) {
+//            // Gestion des erreurs en cas de problème lors de la récupération des commandes
+//            return redirect()->back()->withErrors(['error' => 'Erreur lors de la récupération des commandes : ' . $e->getMessage()]);
+//        }
+//    }
 
 
    public function countCommandesRetard()
@@ -992,25 +1088,27 @@ public function updateCommande(Request $request){
                $data = $document->data();
             //    dd(isset($data['dateDebut']) and isset($data['dateFin']));
                
-               // Si le champ 'date' existe et qu'il est bien formaté
-               if (isset($data['dateDebut']) and isset($data['dateFin'])) {
+                     // Si le champ 'date' existe et qu'il est bien formaté
+               if (isset($data['dateDebut']) and isset($data['dateFin']) and $data['dateDebut'] != '' ) {
                 
-                   // Convertir la chaîne de caractères en date Carbon
-                   $dateDebut = Carbon::createFromFormat('Y-m-d', $data['dateDebut']);
-                   $dateFin = Carbon::createFromFormat('Y-m-d', $data['dateFin']);
-                   
-                //    dd($endDate >= $dateFin);
-                    // dd($dateDebut >= $startDate && $dateFin <= $endDate);
-                   // Vérifier si la date de commande est dans le mois en cours
-                   if ($dateDebut >= $startDate && $dateFin <= $endDate) {
-                       // Ajouter le prix à la somme totale
-                       if (isset($data['prix'])) {
-                           $prix = $prix +  intval($data['prix']);
-                       }
-                       
-                       $nombreCommandes=$nombreCommandes+1;
-                   }
-               }
+                // Convertir la chaîne de caractères en date Carbon
+                $dateDebut = Carbon::createFromFormat('Y-m-d', $data['dateDebut']);
+                $dateFin = Carbon::createFromFormat('Y-m-d', $data['dateFin']);
+                
+             //    dd($endDate >= $dateFin);
+                 // dd($dateDebut >= $startDate && $dateFin <= $endDate);
+                // Vérifier si la date de commande est dans le mois en cours
+                if ($dateDebut >= $startDate && $dateFin <= $endDate) {
+                    // Ajouter le prix à la somme totale
+                    if (isset($data['prix'])) {
+                        $prix = $prix +  intval($data['prix']);
+                    }
+                    
+                    $nombreCommandes=$nombreCommandes+1;
+                }
+            }
+               
+              
            }
 
         //    dd('ok');

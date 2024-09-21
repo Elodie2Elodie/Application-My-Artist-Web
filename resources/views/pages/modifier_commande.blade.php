@@ -35,7 +35,7 @@
                             Envoyer un message
                             </span>
                         </a>
-                        <a class="group-1000004778" href="#" style="text-decoration: none;" id="openPopupBtn">
+                        <a class="group-1000004778"  href="#" style="text-decoration: none;" id="openPopupBtn">
                             <span class="creer-un-client" style="margin-left: 8%;">
                             Voir les mensurations
                             </span>
@@ -73,7 +73,7 @@
             <div style="margin-top: 2%;">
                 <div class="input-container">
                     <i class="mdi mdi-calendar" style="margin-left: 20%; font-size: 24px;"></i>
-                    <input type="number" name="prix" id="prix" class="custom-input-2" placeholder="{{ old('prix',$commande['prix'] ?? '') }}" value="{{ old('prix',$commande['prix'] ?? '') }}">
+                    <input type="number" name="prix" id="prix" class="custom-input-2" placeholder="{{ old('prix',$commande['prix'] ?? 'prix') }}" value="{{ old('prix',$commande['prix'] ?? '') }}">
                     @error('prix')
                       <span class="text-danger">{{ $message }}</span>
                     @enderror
@@ -82,7 +82,7 @@
             <div style="margin-top: 2%;">
                 <div class="input-container">
                     <i class="mdi mdi-calendar" style="margin-left: 20%; font-size: 24px;"></i>
-                    <input type="date" name="dateDebut" id="dateDebut" class="custom-input-2"  placeholder="{{ old('dateDebut',$commande['dateDebut'] ?? '') }}" value="{{ old('dateDebut',$commande['dateDebut'] ?? '') }}">
+                    <input type="date" name="dateDebut" id="dateDebut" class="custom-input-2"  placeholder="{{ old('dateDebut',$commande['dateDebut'] ?? 'Date debut') }}" value="{{ old('dateDebut',$commande['dateDebut'] ?? '') }}">
 
                     @error('dateDebut')
                       <span class="text-danger">{{ $message }}</span>
@@ -139,11 +139,13 @@
                       <input type="text" class="form-control todo-list-input" placeholder="Avez vous une nouvelle tâches à ajouter?">
                       <button class="add btn bg-gradient-green font-weight-bold todo-list-add-btn" id="add-task">Ajouter</button>
                     </div>
-                    @php
-                    $taches = json_decode($commande['taches'], true);
-                    @endphp
+                    
                     <div class="list-wrapper">
                       <ul class="d-flex flex-column-reverse todo-list todo-list-custom">
+                      @if(isset($commande['taches']) and $commande['taches'] != "")
+                        @php
+                        $taches = json_decode($commande['taches'], true);
+                        @endphp
                       @foreach ($taches as $tache)
                         <li class="{{ $tache['completed'] === 'fait' ? 'completed' : '' }}">
                           <div class="form-check">
@@ -154,169 +156,119 @@
                           </div>
                           <i class="remove mdi mdi-close-circle-outline"></i>
                         </li>
+                        
                       @endforeach
+                      @endif
                       </ul>
                     </div>
+                    
                   </div>
                 </div>
               </div>
             </div>
         </div>
 
-        <div  id="myPopup" class="popup">
-          <div class="group-1000004708 popup-content" style="width: 900px; height: 670px; margin-bottom: 5%">
-              <div class="mingcuteclose-fill close">
-                <img class="vector-97" src="{{ asset('assets/vectors/vector_72_x2.svg') }}" />
-              </div>
-              <div style="display: flex; flex-direction: row;">
-                <div style="display: flex; flex-direction: column; margin-right:5%;">
-                  <div style="margin-top: 0.5%; " >
-                    <div class="input-container" >
-                        <i class="mdi mdi-account" style="font-size: 24px;"></i>
-                        <input type="text" class="custom-input-4" placeholder="Identifiant">
-                    </div>
-                  </div>
-                  <div style="margin-top: 0.5%;" >
-                      <div class="input-container" >
-                          <i class="mdi mdi-account" style="font-size: 24px;"></i>
-                          <input type="text" class="custom-input-4" placeholder="Nom et Prénom">
-                      </div>
-                  </div>
-                  <div style="margin-top: 0.5%;" >
-                      <div class="input-container" >
-                          <i class="mdi mdi-phone" style="font-size: 24px;"></i>
-                          <input type="text" class="custom-input-4" placeholder="Numéro">
-                      </div>
-                  </div>
-                  <div style="margin-top: 0.5%;" >
-                      <div class="input-container" >
-                          <i class="mdi mdi-lock" style="font-size: 24px;"></i>
-                          <input type="text" class="custom-input-4" placeholder="Mot De Passe">
-                      </div>
-                  </div>
-                  <div style="margin-top: 0.5%; margin-bottom: 5%;" >
-                      <div class="input-container" >
-                          <i class="mdi mdi-lock" style="font-size: 24px;"></i>
-                          <input type="text" class="custom-input-4" placeholder="Resaissez le mot de passe">
-                      </div>
-                  </div>
-                </div>
-                <div style="display: flex; flex-direction: column; margin-right:5%;">
-                  <div style="margin-top: 0.5%; " >
-                    <div class="input-container" >
-                        <i class="mdi mdi-account" style="font-size: 24px;"></i>
-                        <input type="text" class="custom-input-4" placeholder="Identifiant">
-                    </div>
-                  </div>
-                  <div style="margin-top: 0.5%;" >
-                      <div class="input-container" >
-                          <i class="mdi mdi-account" style="font-size: 24px;"></i>
-                          <input type="text" class="custom-input-4" placeholder="Nom et Prénom">
-                      </div>
-                  </div>
-                  <div style="margin-top: 0.5%;" >
-                      <div class="input-container" >
-                          <i class="mdi mdi-phone" style="font-size: 24px;"></i>
-                          <input type="text" class="custom-input-4" placeholder="Numéro">
-                      </div>
-                  </div>
-                  <div style="margin-top: 0.5%;" >
-                      <div class="input-container" >
-                          <i class="mdi mdi-lock" style="font-size: 24px;"></i>
-                          <input type="text" class="custom-input-4" placeholder="Mot De Passe">
-                      </div>
-                  </div>
-                  <div style="margin-top: 0.5%; margin-bottom: 5%;" >
-                      <div class="input-container" >
-                          <i class="mdi mdi-lock" style="font-size: 24px;"></i>
-                          <input type="text" class="custom-input-4" placeholder="Resaissez le mot de passe">
-                      </div>
-                  </div>
-                </div>
-                <div style="display: flex; flex-direction: column;">
-                  <div style="margin-top: 0.5%; " >
-                    <div class="input-container" >
-                        <i class="mdi mdi-account" style="font-size: 24px;"></i>
-                        <input type="text" class="custom-input-4" placeholder="Identifiant">
-                    </div>
-                  </div>
-                  <div style="margin-top: 0.5%;" >
-                      <div class="input-container" >
-                          <i class="mdi mdi-account" style="font-size: 24px;"></i>
-                          <input type="text" class="custom-input-4" placeholder="Nom et Prénom">
-                      </div>
-                  </div>
-                  <div style="margin-top: 0.5%;" >
-                      <div class="input-container" >
-                          <i class="mdi mdi-phone" style="font-size: 24px;"></i>
-                          <input type="text" class="custom-input-4" placeholder="Numéro">
-                      </div>
-                  </div>
-                  <div style="margin-top: 0.5%;" >
-                      <div class="input-container" >
-                          <i class="mdi mdi-lock" style="font-size: 24px;"></i>
-                          <input type="text" class="custom-input-4" placeholder="Mot De Passe">
-                      </div>
-                  </div>
-                  <div style="margin-top: 0.5%; margin-bottom: 5%;" >
-                      <div class="input-container" >
-                          <i class="mdi mdi-lock" style="font-size: 24px;"></i>
-                          <input type="text" class="custom-input-4" placeholder="Resaissez le mot de passe">
-                      </div>
-                  </div>
-                </div>
-              </div>
-              <div style="display: flex; flex-direction: row; margin-top:5%;">
-                
-                <div style="display: flex; flex-direction: column; margin-right:5%;">
-                  <div style="margin-top: 0.5%;" >
-                      <div class="input-container" >
-                          <i class="mdi mdi-phone" style="font-size: 24px;"></i>
-                          <input type="text" class="custom-input-4" placeholder="Numéro">
-                      </div>
-                  </div>
-                  <div style="margin-top: 0.5%;" >
-                      <div class="input-container" >
-                          <i class="mdi mdi-lock" style="font-size: 24px;"></i>
-                          <input type="text" class="custom-input-4" placeholder="Mot De Passe">
-                      </div>
-                  </div>
-                  <div style="margin-top: 0.5%; margin-bottom: 5%;" >
-                      <div class="input-container" >
-                          <i class="mdi mdi-lock" style="font-size: 24px;"></i>
-                          <input type="text" class="custom-input-4" placeholder="Resaissez le mot de passe">
-                      </div>
-                  </div>
-                </div>
-                <div style="display: flex; flex-direction: column;">
-                  <div style="margin-top: 0.5%;" >
-                      <div class="input-container" >
-                          <i class="mdi mdi-phone" style="font-size: 24px;"></i>
-                          <input type="text" class="custom-input-4" placeholder="Numéro">
-                      </div>
-                  </div>
-                  <div style="margin-top: 0.5%;" >
-                      <div class="input-container" >
-                          <i class="mdi mdi-lock" style="font-size: 24px;"></i>
-                          <input type="text" class="custom-input-4" placeholder="Mot De Passe">
-                      </div>
-                  </div>
-                  <div style="margin-top: 0.5%; margin-bottom: 7%;" >
-                      <div class="input-container" >
-                          <i class="mdi mdi-lock" style="font-size: 24px;"></i>
-                          <input type="text" class="custom-input-4" placeholder="Resaissez le mot de passe">
-                      </div>
-                  </div>
-                </div>
-              </div>
-              
-              <div class="group-bouton-2">
-                <span class="creer">
-                  Modifier
-                </span>
-              </div>
+<div id="myPopup" class="popup">
+  <div class="group-1000004708 popup-content" style="width: 900px; height: 430px; margin-bottom: 15%">
+    <div class="mingcuteclose-fill close">
+      <img class="vector-97" src="{{ asset('assets/vectors/vector_72_x2.svg') }}" />
+    </div>
+    <div style="display: flex; flex-direction: row;">
+      <!-- Première colonne de mensurations -->
+      <div style="display: flex; flex-direction: column; margin-right: 5%;">
+        <div style="margin-top: 0.5%;">
+          <div class="input-container">
+            <i class="mdi mdi-ruler" style="font-size: 24px;"></i>
+            <input type="text" class="custom-input-4" placeholder="Tour de taille (cm)">
           </div>
         </div>
+        <div style="margin-top: 0.5%;">
+          <div class="input-container">
+            <i class="mdi mdi-ruler" style="font-size: 24px;"></i>
+            <input type="text" class="custom-input-4" placeholder="Tour de poitrine (cm)">
+          </div>
+        </div>
+        <div style="margin-top: 0.5%;">
+          <div class="input-container">
+            <i class="mdi mdi-ruler" style="font-size: 24px;"></i>
+            <input type="text" class="custom-input-4" placeholder="Tour de hanches (cm)">
+          </div>
+        </div>
+        <div style="margin-top: 0.5%;">
+          <div class="input-container">
+            <i class="mdi mdi-ruler" style="font-size: 24px;"></i>
+            <input type="text" class="custom-input-4" placeholder="Longueur de bras (cm)">
+          </div>
+        </div>
+      </div>
+
+      <!-- Deuxième colonne de mensurations -->
+      <div style="display: flex; flex-direction: column; margin-right: 5%;">
+        <div style="margin-top: 0.5%;">
+          <div class="input-container">
+            <i class="mdi mdi-ruler" style="font-size: 24px;"></i>
+            <input type="text" class="custom-input-4" placeholder="Longueur de jambes (cm)">
+          </div>
+        </div>
+        <div style="margin-top: 0.5%;">
+          <div class="input-container">
+            <i class="mdi mdi-ruler" style="font-size: 24px;"></i>
+            <input type="text" class="custom-input-4" placeholder="Largeur des épaules (cm)">
+          </div>
+        </div>
+        <div style="margin-top: 0.5%;">
+          <div class="input-container">
+            <i class="mdi mdi-ruler" style="font-size: 24px;"></i>
+            <input type="text" class="custom-input-4" placeholder="Tour de cou (cm)">
+          </div>
+        </div>
+        <div style="margin-top: 0.5%;">
+          <div class="input-container">
+            <i class="mdi mdi-ruler" style="font-size: 24px;"></i>
+            <input type="text" class="custom-input-4" placeholder="Tour de bras (cm)">
+          </div>
+        </div>
+      </div>
+
+      <!-- Troisième colonne de mensurations -->
+      <div style="display: flex; flex-direction: column;">
+        <div style="margin-top: 0.5%;">
+          <div class="input-container">
+            <i class="mdi mdi-ruler" style="font-size: 24px;"></i>
+            <input type="text" class="custom-input-4" placeholder="Tour de cuisse (cm)">
+          </div>
+        </div>
+        <div style="margin-top: 0.5%;">
+          <div class="input-container">
+            <i class="mdi mdi-ruler" style="font-size: 24px;"></i>
+            <input type="text" class="custom-input-4" placeholder="Tour de mollet (cm)">
+          </div>
+        </div>
+        <div style="margin-top: 0.5%;">
+          <div class="input-container">
+            <i class="mdi mdi-ruler" style="font-size: 24px;"></i>
+            <input type="text" class="custom-input-4" placeholder="Hauteur du buste (cm)">
+          </div>
+        </div>
+        <div style="margin-top: 0.5%; margin-bottom: 6%;">
+          <div class="input-container">
+            <i class="mdi mdi-ruler" style="font-size: 24px;"></i>
+            <input type="text" class="custom-input-4" placeholder="Longueur totale (cm)">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bouton de confirmation -->
+    <div class="group-bouton-2">
+      <span class="creer">
+        Modifier
+      </span>
+    </div>
+  </div>
+</div>
+
+
     
         <!-- main-panel ends -->
       </div>

@@ -25,6 +25,7 @@ Route::controller(TenueController::class)->prefix('tenues')->name('tenues.')->gr
     Route::get('/epuisees', 'indexEpuises')->name('epuisees');
     Route::get('/recherche', 'searchByName')->name('search');
     Route::post('/{tenueId}/add-images', 'addSecondaryImages')->name('addImages');
+    
 });
 
 Route::prefix('auth')->name('auth.')->group(function () {
@@ -44,7 +45,6 @@ Route::prefix('auth')->name('auth.')->group(function () {
     Route::get('/showProfilUser', [AuthController::class, 'showProfilUser'])->name('showProfilUser');
     Route::post('/register', [AuthController::class, 'register'])->name('register');
     Route::post('/registerUser', [AuthController::class, 'registerUser'])->name('registerUser');
-    
 });
 
 Route::controller(UtilisateurController::class)->prefix('utilisateurs')->name('utilisateurs.')->group(function () {
@@ -70,7 +70,8 @@ Route::controller(CommandeController::class)->prefix('commandes')->name('command
     Route::get('/calendrier', 'calendrierIndex')->name('calendrierIndex');
     Route::get('/pieChart', 'pieChartCommande')->name('pieChart');
     Route::get('/barChart', 'barChartCommande')->name('barChart');
-
+    Route::get('/mensurations/${clientId}', 'getMensurations')->name('mensurations');
+    Route::get('/getPanier', 'getPanier')->name('getPanier');
 });
 
 Route::get('/index', [AuthController::class, 'showIndex'])->name('show_index');

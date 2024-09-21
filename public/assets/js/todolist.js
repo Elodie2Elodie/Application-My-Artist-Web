@@ -202,6 +202,7 @@ function toggleModePaiement() {
   }
 }
 
+
 // Vérifie au chargement de la page si le paiement est déjà "payer"
 document.addEventListener('DOMContentLoaded', function() {
   toggleModePaiement();
@@ -209,6 +210,51 @@ document.addEventListener('DOMContentLoaded', function() {
   // Ajoute un écouteur d'événements pour détecter les changements de valeur
   document.getElementById('paiementSelect').addEventListener('change', toggleModePaiement);
 });
+
+
+  var clientId = "{{ $commande['client_id'] }}";  // Si l'ID est disponible
+
+    console.log("ID du client : " + clientId);
+
+  //   document.getElementById('openPopupButton').addEventListener('click', function() {
+  //     openPopup(clientId);
+  // });
+
+  function openPopup(clientId) {
+    // Afficher le popup
+    document.getElementById('myPopup').style.display = 'block';
+
+    // Récupérer les mensurations du client via une requête Ajax
+    fetch(`commandes/mensurations/${clientId}`)
+      .then(response => response.json())
+      .then(data => {
+        if (data.error) {
+          alert('Erreur: ' + data.error);
+        } else {
+          // Charger les mensurations dans les champs du formulaire
+          document.querySelector("input[placeholder='Tour de taille (cm)']").value = data.tour_de_taille || '';
+          document.querySelector("input[placeholder='Tour de poitrine (cm)']").value = data.tour_de_poitrine || '';
+          document.querySelector("input[placeholder='Tour de hanches (cm)']").value = data.tour_de_hanches || '';
+          document.querySelector("input[placeholder='Longueur de bras (cm)']").value = data.longueur_de_bras || '';
+          document.querySelector("input[placeholder='Longueur de jambes (cm)']").value = data.longueur_de_jambes || '';
+          document.querySelector("input[placeholder='Largeur des épaules (cm)']").value = data.largeur_des_epaules || '';
+          document.querySelector("input[placeholder='Tour de cou (cm)']").value = data.tour_de_cou || '';
+          document.querySelector("input[placeholder='Tour de bras (cm)']").value = data.tour_de_bras || '';
+          document.querySelector("input[placeholder='Tour de cuisse (cm)']").value = data.tour_de_cuisse || '';
+          document.querySelector("input[placeholder='Tour de mollet (cm)']").value = data.tour_de_mollet || '';
+          document.querySelector("input[placeholder='Hauteur du buste (cm)']").value = data.hauteur_du_buste || '';
+          document.querySelector("input[placeholder='Longueur totale (cm)']").value = data.longueur_totale || '';
+        }
+      })
+      .catch(error => {
+        console.error('Erreur lors du chargement des mensurations:', error);
+      });
+  }
+
+  // Fermer le popup
+  function closePopup() {
+    document.getElementById('myPopup').style.display = 'none';
+  }
 
 
 

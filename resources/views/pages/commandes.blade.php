@@ -42,7 +42,7 @@
                     </a>
                 </div>
             </div>
-            @if ($errors->any())
+            <!-- @if ($errors->any())
             <div class="center-flex alert alert-danger" style="margin-bottom:5%; background-color: rgba(255, 0, 0, 0.5); height:20px;">
                 <ul>
                     @foreach ($errors->all() as $error)
@@ -51,7 +51,7 @@
                 </ul>
             </div>
             <br>
-            @endif
+            @endif -->
 
             @if (session('success'))
                 <div class="center-flex alert alert-success" style="margin-bottom:5%; background-color: rgba(64, 138, 126, 0.5); height:20px;">
@@ -142,7 +142,7 @@
                       <span class="progression-4">
                       Statut:
                       </span>
-                      <h4 class="container-4 {{ $commande['status'] == Bonne progression ? '' : color-red }}" >
+                      <h4 class="container-4" {{ $commande['status'] == 'Bonne progression' ? '' : 'color-red' }} >
                       {{ $commande['status'] }} 
                       </h4>
                     </div>
@@ -160,62 +160,71 @@
                     Tâches :
                     </div>
                     <div class="frame-71">
+                    @if(isset($commande['taches']) && $commande['taches'] != "")
+                    @php
+                        $taches = json_decode($commande['taches'], true);  // Décodage du JSON
+                        $tachesCount = count($taches);  // Calcul du nombre d'éléments
+                    @endphp
+                    @for($i = 0; $i < $tachesCount; $i += 2)  <!-- Incrémentation de 2 -->
                       <div class="container-60">
+                        
                         <div class="group-tche-24">
                           <span class="coupure-4">
-                          Coupure
+                          {{ $taches[$i]['text'] }}
                           </span>
+                          @if( $taches[$i]['completed'] == 'fait')
                           <div class="dashiconsyes-8">
                             <img class="vector-13" src="../assets/vectors/vector_298_x2.svg" />
                           </div>
+                          @endif
                         </div>
+                        @if($i+1 < $tachesCount)
                         <div class="group-tche-24">
                           <span class="coupure-4">
-                          Confection haut
+                          {{ $taches[$i+1]['text'] }}
                           </span>
+                          @if( $taches[$i+1]['completed'] == 'fait')
                           <div class="dashiconsyes-8">
                             <img class="vector-13" src="../assets/vectors/vector_298_x2.svg" />
                           </div>
+                          @endif
                         </div>
+                        @endif
+                        
                       </div>
-                      <div class="container-58">
-                        <div class="group-tche-26">
-                          <span class="coupure-du-bas-4">
-                          Coupure du bas
-                          </span>
-                        </div>
-                        <div class="group-tche-27">
-                          <span class="premier-assemblage-4">
-                          Premier assemblage
-                          </span>
-                        </div>
-                      </div>
-                      <div class="container-38">
-                        <div class="group-tche-28">
-                          <span class="assemblage-finale-4">
-                          Assemblage finale
-                          </span>
-                        </div>
-                        <div class="group-tche-29">
-                          <span class="pofinage-4">
-                          Pofinage
-                          </span>
-                        </div>
-                      </div>
+                      @endfor
+                        @endif
+                      
                     </div>
-                    <div class="container-45">
+                    <div class="container-45" style="margin-top: -15%;">
                       <span class="client-4">
                       Client :
                       </span>
                       <span class="aline-4">
-                      Aline
+                      {{ $commande['nomClient'] }}
                       </span>
                     </div>
+                 
                   </div>
                 </div>
                 <div class="vector-674">
                 </div>
               </a>
+              @if($commande['etat'] == 'En attente')
+              <div class="container-icones">
+                <!-- Bouton pour accepter la commande -->
+                <a href="{{ route('commandes.showModifyCommande', ['id' => $commande['commandeId']]) }}" class="btn-accepter" style="text-decoration: none;">
+                  <i class="mdi mdi-check-circle" style="margin-right: 5px;"></i>
+                  Accepter
+                </a>
+
+                <!-- Bouton pour refuser la commande -->
+                <a href="#" class="btn-refuser" style="text-decoration: none;">
+                  <i class="mdi mdi-cancel" style="margin-right: 5px;"></i>
+                  Refuser
+                </a>
+              </div>
+              @endif
               @endforeach
               
               

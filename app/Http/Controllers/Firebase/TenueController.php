@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Firebase;
 
 use App\Http\Controllers\Controller;
+use Exception;
 use Illuminate\Http\Request;
 use Kreait\Firebase\Factory;
 use Kreait\Firebase\Firestore;
@@ -13,12 +14,15 @@ class TenueController extends Controller
 {
     protected $firestore;
     protected $tenueCollection;
+    protected $panierCollection;
 
     public function __construct()
     {
         $factory = (new Factory)->withServiceAccount(base_path(env('FIREBASE_CREDENTIALS')));
         $this->firestore = $factory->createFirestore();
         $this->tenueCollection = $this->firestore->database()->collection('tenues');
+        $this->panierCollection = $this->firestore->database()->collection('paniers');
+
     }
 
     // Afficher toutes les tenues
@@ -37,7 +41,8 @@ class TenueController extends Controller
                     $tenueList[] = $tenue->data();
                 }
             }
-    
+            
+            dd($tenueList);
             // Retourner les données des tenues en format JSON
             return view('pages/boutique',['tenues' => $tenueList]);
         } catch (\Exception $e) {
@@ -222,8 +227,10 @@ class TenueController extends Controller
         public function index_atelier()
         {
             try {
-                $atelierId="at1";
+                
+                $atelierId=session('user.atelierId');
                 if (!$atelierId) {
+                    dd($atelierId);
                     return response()->json(['error' => 'ID de l\'atelier requis'], 400);
                 }
 
@@ -503,7 +510,7 @@ class TenueController extends Controller
     public function getTenuesByEtat($etat)
     {
         try {
-            $atelierId = "at1";
+            $atelierId = session('user.atelierId');
             if (!$atelierId) {
                 return response()->json(['error' => 'ID de l\'atelier requis'], 400);
             }
@@ -528,6 +535,35 @@ class TenueController extends Controller
             return response()->json(['error' => 'Une erreur est survenue lors de la récupération des tenues', 'message' => $e->getMessage()], 500);
         }
     }
+
+        public function getPanier(){
+        try{
+
+            
+            $atelierId = session('user.atelierId');
+            if (!$atelierId) {
+                return response()->json(['error' => 'ID de l\'atelier requis'], 400);
+            }
+
+            // Filtrer les documents en fonction de l'ID de l'atelier et de l'état
+            $query = $this->panierCollection
+                ->where('ateliers_id', '=', $atelierId)
+                ->where('is_livrer', '=', 'non')
+                ->where('is_valider', '=', 'oui')
+                ->documents();
+
+            $panierList = [];
+            foreach ($query as $panier) {
+                $panierList[] = $panier->data();
+            }
+
+            return view('pages/ventes',['ventes' => $panierList]);
+        }catch(Exception $e){
+            return response()->json(['error' => 'Une erreur est survenue lors de la récupération des paniers', 'message' => $e->getMessage()], 500);
+        }
+        
+            
+        }
 
     public function indexEpuises()
     {

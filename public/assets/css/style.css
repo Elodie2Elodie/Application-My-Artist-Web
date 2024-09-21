@@ -26341,3 +26341,37 @@ dl li {
   color: red;
 }
 /*# sourceMappingURL=maps/style.css.map */
+
+
+.container-icones {
+  display: flex;
+  gap: 10px; /* Espace entre les boutons */
+}
+
+.btn-accepter, .btn-refuser {
+  display: flex;
+  align-items: center;
+  padding: 10px 15px;
+  border-radius: 5px;
+  color: white;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.btn-accepter {
+  background-color: #408A7E; /* Couleur pour le bouton Accepter */
+}
+
+.btn-refuser {
+  background-color: red; /* Couleur pour le bouton Refuser */
+}
+
+.btn-accepter:hover {
+  background-color: #46c35f; /* Couleur au survol pour Accepter */
+}
+
+.btn-refuser:hover {
+  background-color: darkred; /* Couleur au survol pour Refuser */
+}

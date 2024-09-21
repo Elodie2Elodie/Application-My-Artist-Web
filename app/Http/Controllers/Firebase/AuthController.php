@@ -223,13 +223,12 @@ class AuthController extends Controller
                     return redirect()->route('auth.showLoginForm')->with('error', 'Vous avez etez bloqué; veuilez contacter l\'administrateur ou le super administrateur pour plus d\'informations.');
                 }
 
-                if ($util['role'] == 'couturier' || $util['role'] == 'client') {
+                if ($util['role'] == 'couturier') {
                     if ($util['firstConnection'] == 0) {
                         $this->updateFirstConnection($user->uid);
                         return redirect()->route('auth.showResetPasswordForm');
-                    }
-
-                   
+                    }   
+                    return redirect()->route('commandes.calendrierIndex');
                 }
             }
             return redirect()->route('commandes.showIndex');
